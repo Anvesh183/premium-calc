@@ -1,16 +1,17 @@
 const { createClient } = require("@supabase/supabase-js");
 
-// Use the correct REACT_APP_ prefixed environment variables
+// Ensure you are using the REACT_APP_ prefix
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 exports.handler = async function (event, context) {
+  // ... (the rest of the function remains the same)
   if (!supabaseUrl || !supabaseAnonKey) {
     return {
       statusCode: 500,
       body: JSON.stringify({
         error:
-          "Supabase URL or Key is missing. Please check your environment variables in your Netlify settings.",
+          "Supabase URL or Key is missing. Please check your REACT_APP_ environment variables in your Netlify settings.",
       }),
     };
   }

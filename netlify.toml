@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "build/"
 
+# This line tells Netlify where to find your serverless functions
+[functions]
+  directory = "functions/"
+
+# This redirect rule is for your React app's routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
