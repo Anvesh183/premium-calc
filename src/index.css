@@ -1,0 +1,205 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f8f9fa;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #e9ecef;
+}
+::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+h1 {
+  color: #dc143c !important;
+}
+
+.byline {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.byline b {
+  color: #212529;
+}
+
+/* --- Styles for Fire Insurance & Short Period Calculators --- */
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.calculator-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between rows */
+}
+
+.calculator-row {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem; /* Space between inputs in a row */
+  align-items: flex-start;
+}
+
+.calculator-cell {
+  flex: 1; /* Each cell will take up equal space */
+  min-width: 0; /* Prevents overflow on smaller screens */
+}
+
+.calculator-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+}
+
+.btn {
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  cursor: pointer;
+}
+.btn.primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+.btn:hover {
+  background-color: #f3f4f6;
+}
+.btn.primary:hover {
+  background-color: #2563eb;
+}
+
+#ratesTableBody tr {
+  cursor: pointer;
+}
+
+#ratesTableBody tr.selected-row {
+  background-color: #dbeafe;
+}
+
+/* This class restricts the height of the rates table */
+.table-responsive-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 0.75rem;
+}
+/* --- End of Fire Insurance Styles --- */
+
+/* --- Styles for Landing Page Cards --- */
+.calculator-card {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.calculator-card-link {
+  text-decoration: none;
+}
+
+.calculator-card-link:hover .calculator-card {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #3b82f6;
+}
+
+.calculator-card-link:hover .card-footer {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.card-footer {
+  background-color: #f9fafb;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: right;
+  font-weight: 600;
+  color: #3b82f6;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-overlay {
+  transition: opacity 0.3s ease-in-out;
+  z-index: 50; /* This ensures it's above the z-40 navbar */
+}
+
+.modal-content {
+  transition: transform 0.3s ease-in-out;
+}
+/* --- End of Landing Page Styles --- */
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+  .calculator-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .calculator-cell {
+    width: 100%;
+  }
+
+  /* This makes the tables in GIPSA and Fire responsive */
+  .responsive-table table,
+  .responsive-table thead,
+  .responsive-table tbody,
+  .responsive-table th,
+  .responsive-table td,
+  .responsive-table tr {
+    display: block;
+  }
+  .responsive-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  .responsive-table tr {
+    border: 1px solid #e5e7eb;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+  }
+  .responsive-table td {
+    border: none;
+    position: relative;
+    padding-left: 50% !important;
+    text-align: right !important;
+  }
+  .responsive-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0.5rem;
+    width: 45%;
+    padding-right: 0.5rem;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #4b5563;
+    text-align: left;
+  }
+}
