@@ -1,17 +1,16 @@
 const { createClient } = require("@supabase/supabase-js");
 
-// Get Supabase credentials from environment variables
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+// Use the correct REACT_APP_ prefixed environment variables
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 exports.handler = async function (event, context) {
-  // **DEBUGGING STEP:** Check if the environment variables are missing
   if (!supabaseUrl || !supabaseAnonKey) {
     return {
       statusCode: 500,
       body: JSON.stringify({
         error:
-          "Supabase URL or Key is missing. Please check your environment variables in your hosting provider's settings.",
+          "Supabase URL or Key is missing. Please check your environment variables in your Netlify settings.",
       }),
     };
   }
@@ -24,7 +23,6 @@ exports.handler = async function (event, context) {
       supabase.from("earthquake_zones").select("*"),
     ]);
 
-    // Check for errors in the Supabase responses
     if (ratesResponse.error)
       throw new Error(`Rates Fetch Error: ${ratesResponse.error.message}`);
     if (zonesResponse.error)
@@ -38,7 +36,6 @@ exports.handler = async function (event, context) {
       }),
     };
   } catch (error) {
-    // Return the specific error message
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
