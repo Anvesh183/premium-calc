@@ -2,6 +2,8 @@ import React from "react";
 
 const GipsaResults = ({ results }) => {
   const { rows, monthlySubsidized, monthlyGrand } = results;
+  const annualGrand = monthlyGrand * 12;
+
   const inr = (n) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -59,10 +61,13 @@ const GipsaResults = ({ results }) => {
       <div className="results-summary">
         <div className="summary-box">
           Monthly (Employee share for subsidized members):{" "}
-          {inr(monthlySubsidized)}
+          <strong>{inr(monthlySubsidized)}</strong>
         </div>
         <div className="summary-box">
-          Monthly (Total incl. GST): {inr(monthlyGrand)}
+          Monthly (Total incl. GST): <strong>{inr(monthlyGrand)}</strong>
+        </div>
+        <div className="summary-box">
+          Annual Total (Total incl. GST): <strong>{inr(annualGrand)}</strong>
         </div>
       </div>
     </section>

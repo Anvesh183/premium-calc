@@ -1,6 +1,14 @@
 import React from "react";
 
-const MemberCard = ({ label, memberKey, data, onChange, ageBands }) => {
+const MemberCard = ({
+  label,
+  memberKey,
+  data,
+  onChange,
+  ageBands,
+  entitlement,
+  isSubsidized,
+}) => {
   const SI_SLABS = [8, 10, 12, 15, 20, 25, 30, 35, 40, 50];
 
   return (
@@ -19,6 +27,8 @@ const MemberCard = ({ label, memberKey, data, onChange, ageBands }) => {
           <select
             value={data.age}
             onChange={(e) => onChange(memberKey, "age", e.target.value)}
+            disabled={!data.on}
+            className={!data.on ? "bg-gray-100" : ""}
           >
             {ageBands.map((age) => (
               <option key={age} value={age}>
@@ -32,10 +42,23 @@ const MemberCard = ({ label, memberKey, data, onChange, ageBands }) => {
           <select
             value={data.si}
             onChange={(e) => onChange(memberKey, "si", e.target.value)}
+            disabled={!data.on}
+            className={!data.on ? "bg-gray-100" : ""}
           >
             {SI_SLABS.map((si) => (
-              <option key={si} value={si}>
-                {si} L
+              <option
+                key={si}
+                value={si}
+                style={{
+                  backgroundColor:
+                    isSubsidized && si <= entitlement
+                      ? "#e0f2fe"
+                      : "transparent",
+                  fontWeight:
+                    isSubsidized && si <= entitlement ? "bold" : "normal",
+                }}
+              >
+                {si} L {isSubsidized && si <= entitlement ? "(Entitled)" : ""}
               </option>
             ))}
           </select>

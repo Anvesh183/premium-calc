@@ -118,6 +118,8 @@ const GipsaInputs = ({
           data={members.emp}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.employee)}
+          entitlement={entitlement}
+          isSubsidized={true}
         />
         <MemberCard
           label="Spouse"
@@ -125,6 +127,8 @@ const GipsaInputs = ({
           data={members.spouse}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.spouse)}
+          entitlement={entitlement}
+          isSubsidized={true}
         />
         <MemberCard
           label="Dependent Child 1"
@@ -132,6 +136,8 @@ const GipsaInputs = ({
           data={members.child1}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.family)}
+          entitlement={entitlement}
+          isSubsidized={true}
         />
         <MemberCard
           label="Dependent Child 2"
@@ -139,6 +145,8 @@ const GipsaInputs = ({
           data={members.child2}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.family)}
+          entitlement={entitlement}
+          isSubsidized={true}
         />
       </div>
 
@@ -151,6 +159,8 @@ const GipsaInputs = ({
           data={members.parent1}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.parents)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
         <MemberCard
           label="Parent 2"
@@ -158,6 +168,8 @@ const GipsaInputs = ({
           data={members.parent2}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.parents)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
         <MemberCard
           label="Parent-in-law 1"
@@ -165,6 +177,8 @@ const GipsaInputs = ({
           data={members.parentInLaw1}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.parents)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
         <MemberCard
           label="Parent-in-law 2"
@@ -172,6 +186,8 @@ const GipsaInputs = ({
           data={members.parentInLaw2}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.parents)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
         <MemberCard
           label="Independent Child 1"
@@ -179,6 +195,8 @@ const GipsaInputs = ({
           data={members.indChild1}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.indChildren)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
         <MemberCard
           label="Independent Child 2"
@@ -186,6 +204,8 @@ const GipsaInputs = ({
           data={members.indChild2}
           onChange={onMemberChange}
           ageBands={Object.keys(premiums.indChildren)}
+          entitlement={entitlement}
+          isSubsidized={false}
         />
       </div>
 
