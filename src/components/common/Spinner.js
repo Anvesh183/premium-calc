@@ -1,8 +1,9 @@
 import React from "react";
+import { PulseLoader } from "react-spinners";
 
 const Spinner = () => (
-  <div className="flex justify-center items-center h-full">
-    <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+  <div className="flex justify-center items-center h-full py-16">
+    <PulseLoader color={"#3b82f6"} loading={true} size={15} />
   </div>
 );
 
