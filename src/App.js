@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,10 +6,16 @@ import {
   Outlet,
 } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
-import LandingPage from "./pages/LandingPage";
-import FireInsuranceCalculator from "./pages/FireInsuranceCalculator";
-import GipsaGmcCalculator from "./pages/GipsaGmcCalculator";
-import TravelInsuranceCalculator from "./pages/TravelInsuranceCalculator"; // Import the new calculator
+import Spinner from "./components/common/Spinner";
+
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const FireInsuranceCalculator = lazy(() =>
+  import("./pages/FireInsuranceCalculator")
+);
+const GipsaGmcCalculator = lazy(() => import("./pages/GipsaGmcCalculator"));
+const TravelInsuranceCalculator = lazy(() =>
+  import("./pages/TravelInsuranceCalculator")
+);
 
 const AppLayout = () => (
   <>
@@ -23,17 +29,22 @@ const AppLayout = () => (
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route index element={<LandingPage />} />
-          <Route path="fire-insurance" element={<FireInsuranceCalculator />} />
-          <Route path="gipsa-gmc" element={<GipsaGmcCalculator />} />
-          <Route
-            path="travel-insurance"
-            element={<TravelInsuranceCalculator />}
-          />
-        </Route>
-      </Routes>
+      <Suspense fallback={<Spinner />}>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<LandingPage />} />
+            <Route
+              path="fire-insurance"
+              element={<FireInsuranceCalculator />}
+            />
+            <Route path="gipsa-gmc" element={<GipsaGmcCalculator />} />
+            <Route
+              path="travel-insurance"
+              element={<TravelInsuranceCalculator />}
+            />
+          </Route>
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

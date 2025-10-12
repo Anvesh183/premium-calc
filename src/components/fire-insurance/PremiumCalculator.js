@@ -11,13 +11,14 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
   const [district, setDistrict] = useState("");
   const [eqZone, setEqZone] = useState("0");
   const [terrorism, setTerrorism] = useState("0");
-  const [adjustment, setAdjustment] = useState("");
+  const [discount, setDiscount] = useState("");
   const [kutcha, setKutcha] = useState(false);
   const [floater, setFloater] = useState(false);
   const [zoneResult, setZoneResult] = useState("");
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [selectedRowCode, setSelectedRowCode] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // Determine if the risk is industrial based on the STFI category selection
   const isIndustrial = stfi === "0.370";
@@ -108,25 +109,29 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
     });
   }, [selectedRowCode, filteredRates]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!sumInsured || sumInsured <= 0)
+      newErrors.sumInsured = "Please enter a valid Sum Insured.";
+    if (!baseRate || baseRate <= 0)
+      newErrors.baseRate = "Please select a risk from the table above.";
+    if (discount < 0) newErrors.discount = "Discount cannot be negative.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleCalculate = () => {
+    if (!validate()) return;
+
     const tsi = parseFloat(sumInsured) || 0;
     const base = parseFloat(baseRate) || 0;
     const eq = parseFloat(eqZone) || 0;
     const stfiRate = parseFloat(stfi) || 0;
     const terror = parseFloat(terrorism) || 0;
     const kutchaLoading = kutcha ? 4.0 : 0;
-    const adjustmentPercentage = parseFloat(adjustment) || 0;
-
-    if (tsi <= 0 || isNaN(base)) {
-      setModalContent(
-        `<p class="text-center font-semibold text-red-600">Please enter a valid Total Sum Insured and Base Rate.</p>`
-      );
-      setModalOpen(true);
-      return;
-    }
+    const discountPercentage = parseFloat(discount) || 0;
 
     let totalRate = base + eq + stfiRate + terror + kutchaLoading;
-    const discountPercentage = Math.abs(adjustmentPercentage);
     const adjustmentFactor = 1 - discountPercentage / 100;
     const policyRate = totalRate * adjustmentFactor;
     const floaterLoadingRate = floater ? policyRate * 0.1 : 0;
@@ -173,12 +178,11 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
             4
           )}</span></div>
           ${
-            adjustmentPercentage !== 0
-              ? `<div class="flex justify-between"><span>Discount (${adjustmentPercentage}%):</span> <span>${
-                  adjustmentPercentage > 0 ? "-" : ""
-                }${(totalRate * (adjustmentPercentage / 100)).toFixed(
-                  4
-                )}</span></div>`
+            discountPercentage !== 0
+              ? `<div class="flex justify-between"><span>Discount (${discountPercentage}%):</span> <span>-${(
+                  totalRate *
+                  (discountPercentage / 100)
+                ).toFixed(4)}</span></div>`
               : ""
           }
           <div class="flex justify-between font-bold text-blue-600"><span>Policy Rate:</span> <span>${policyRate.toFixed(
@@ -238,11 +242,12 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
     setDistrict("");
     setEqZone("0");
     setTerrorism("0");
-    setAdjustment("");
+    setDiscount("");
     setKutcha(false);
     setFloater(false);
     setZoneResult("");
     setSelectedRowCode(null);
+    setErrors({});
   };
 
   return (
@@ -264,8 +269,14 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
               id="sumInsured"
               value={sumInsured}
               onChange={(e) => setSumInsured(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="e.g., 5000000"
+              className={`mt-1 block w-full p-2 border ${
+                errors.sumInsured ? "border-red-500" : "border-gray-300"
+              } rounded-md`}
             />
+            {errors.sumInsured && (
+              <p className="text-xs text-red-500 mt-1">{errors.sumInsured}</p>
+            )}
           </div>
           <div className="calculator-cell">
             <label
@@ -280,8 +291,14 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
               id="baseRate"
               value={baseRate}
               onChange={(e) => setBaseRate(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Select a risk from the table"
+              className={`mt-1 block w-full p-2 border ${
+                errors.baseRate ? "border-red-500" : "border-gray-300"
+              } rounded-md`}
             />
+            {errors.baseRate && (
+              <p className="text-xs text-red-500 mt-1">{errors.baseRate}</p>
+            )}
           </div>
           <div className="calculator-cell">
             <label
@@ -407,18 +424,25 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
           </div>
           <div className="calculator-cell">
             <label
-              htmlFor="adjustment"
+              htmlFor="discount"
               className="block text-sm font-medium text-gray-700"
             >
               Discount (%)
             </label>
             <input
               type="number"
-              id="adjustment"
-              value={adjustment}
-              onChange={(e) => setAdjustment(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              id="discount"
+              value={discount}
+              min="0"
+              onChange={(e) => setDiscount(e.target.value)}
+              placeholder="e.g., 5"
+              className={`mt-1 block w-full p-2 border ${
+                errors.discount ? "border-red-500" : "border-gray-300"
+              } rounded-md`}
             />
+            {errors.discount && (
+              <p className="text-xs text-red-500 mt-1">{errors.discount}</p>
+            )}
           </div>
           <div className="calculator-cell pt-6">
             <div className="flex items-center mb-2">
@@ -454,8 +478,13 @@ const PremiumCalculator = ({ allZones, filteredRates }) => {
         </button>
         <button
           id="calculateBtn"
-          className="btn primary"
+          className={`btn primary ${
+            Object.keys(errors).length > 0 || !sumInsured || !baseRate
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
           onClick={handleCalculate}
+          disabled={Object.keys(errors).length > 0 || !sumInsured || !baseRate}
         >
           Calculate Annual Premium
         </button>
