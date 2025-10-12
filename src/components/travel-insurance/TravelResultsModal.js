@@ -4,21 +4,40 @@ const TravelResultsModal = ({ isOpen, onClose, results }) => {
   if (!isOpen) return null;
 
   const handlePrint = () => {
-    const printWindow = window.open("", "", "height=800,width=600");
-    printWindow.document.write(
-      "<html><head><title>Travel Insurance Quote</title>"
-    );
-    printWindow.document.write(
-      "<style>body { font-family: sans-serif; padding: 20px; } table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; } .total { font-weight: bold; } </style>"
-    );
-    printWindow.document.write("</head><body>");
-    printWindow.document.write("<h1>Overseas Travel Insurance Quote</h1>");
-    printWindow.document.write(
-      document.getElementById("printable-quote").innerHTML
-    );
-    printWindow.document.write("</body></html>");
+    const printWindow = window.open("", "", "height=800,width=800");
+    const quoteContent = document.getElementById("printable-quote").innerHTML;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Travel Insurance Quote</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+          />
+          <style>
+            body { 
+              font-family: 'Inter', sans-serif;
+            }
+          </style>
+        </head>
+        <body class="p-8">
+          ${quoteContent}
+        </body>
+      </html>
+    `);
+
     printWindow.document.close();
-    printWindow.print();
+    printWindow.focus();
+
+    // Use a timeout to ensure all styles are loaded before printing
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
   };
 
   const formatCurrency = (amount) =>
@@ -30,75 +49,98 @@ const TravelResultsModal = ({ isOpen, onClose, results }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8">
+        {/* This is the area that will be printed */}
         <div id="printable-quote">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Premium Quote Summary
-          </h2>
-          <h3 className="text-lg font-semibold text-gray-700 mt-4">
-            Traveller Premiums
-          </h3>
-          <table className="w-full text-sm mt-2">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2">Traveller</th>
-                <th className="p-2">Sum Insured</th>
-                <th className="p-2">Base Premium</th>
-                <th className="p-2">Age Loading</th>
-                <th className="p-2">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.travellerPremiums.map((traveller, index) => (
-                <tr key={index} className="border-b">
-                  <td className="p-2">
-                    Traveller {index + 1} ({traveller.age})
-                  </td>
-                  <td className="p-2">
-                    ${parseInt(traveller.sumInsured).toLocaleString()}
-                  </td>
-                  <td className="p-2">
-                    {formatCurrency(traveller.basePremium)}
-                  </td>
-                  <td className="p-2">
-                    {formatCurrency(traveller.ageLoading)} (
-                    {traveller.ageLoadingPercentage}%)
-                  </td>
-                  <td className="p-2 font-semibold">
-                    {formatCurrency(traveller.total)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="mt-6 space-y-2">
-            <div className="flex justify-between">
-              <p>Sub-total Premium:</p>
-              <p className="font-semibold">
-                {formatCurrency(results.totalBasePremium)}
-              </p>
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Premium<span className="text-blue-600">Calc</span>
+            </h1>
+            <p className="text-lg font-semibold text-gray-700">
+              Overseas Travel Insurance Quote
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 border">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              Traveller Premiums
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-2 text-left font-semibold">Traveller</th>
+                    <th className="p-2 text-left font-semibold">Sum Insured</th>
+                    <th className="p-2 text-right font-semibold">
+                      Base Premium
+                    </th>
+                    <th className="p-2 text-right font-semibold">
+                      Age Loading
+                    </th>
+                    <th className="p-2 text-right font-bold">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.travellerPremiums.map((traveller, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="p-2">
+                        Traveller {index + 1} ({traveller.age})
+                      </td>
+                      <td className="p-2">
+                        ${parseInt(traveller.sumInsured).toLocaleString()}
+                      </td>
+                      <td className="p-2 text-right">
+                        {formatCurrency(traveller.basePremium)}
+                      </td>
+                      <td className="p-2 text-right">
+                        {formatCurrency(traveller.ageLoading)} (
+                        {traveller.ageLoadingPercentage}%)
+                      </td>
+                      <td className="p-2 text-right font-semibold">
+                        {formatCurrency(traveller.total)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div className="flex justify-between">
-              <p className="text-green-600">Discount:</p>
-              <p className="font-semibold text-green-600">
-                - {formatCurrency(results.discountAmount)}
-              </p>
-            </div>
-            <div className="flex justify-between font-bold">
-              <p>Premium Before GST:</p>
-              <p>{formatCurrency(results.premiumAfterDiscount)}</p>
-            </div>
-            <div className="flex justify-between">
-              <p>GST (18%):</p>
-              <p className="font-semibold">
-                {formatCurrency(results.gstAmount)}
-              </p>
-            </div>
-            <div className="flex justify-between text-2xl font-bold text-blue-600 border-t pt-2 mt-2">
-              <p>Final Total Premium:</p>
-              <p>{formatCurrency(results.finalPremium)}</p>
+
+            <div className="mt-6 space-y-3 border-t pt-4">
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600">Sub-total Premium:</p>
+                <p className="font-semibold text-lg">
+                  {formatCurrency(results.totalBasePremium)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center text-green-600">
+                <p>Discount:</p>
+                <p className="font-semibold text-lg">
+                  - {formatCurrency(results.discountAmount)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center font-bold border-t pt-3 mt-3">
+                <p className="text-gray-800">Premium before GST:</p>
+                <p className="text-xl">
+                  {formatCurrency(results.premiumAfterDiscount)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-600">GST (18%):</p>
+                <p className="font-semibold text-lg">
+                  {formatCurrency(results.gstAmount)}
+                </p>
+              </div>
+              <div className="flex justify-between items-center border-t pt-3 mt-3">
+                <p className="text-gray-800 font-bold text-xl">
+                  Final Total Premium:
+                </p>
+                <p className="font-bold text-2xl text-blue-600">
+                  {formatCurrency(results.finalPremium)}
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
         <div className="mt-8 text-center flex justify-center gap-4">
           <button
             onClick={handlePrint}

@@ -5,55 +5,73 @@ const TravellerInput = ({
   index,
   onTravellerChange,
   onRemoveTraveller,
+  isPlanDisabled, // New prop
 }) => {
+  const isSenior =
+    traveller.age.startsWith("61") ||
+    traveller.age.startsWith("71") ||
+    traveller.age.startsWith("76");
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end p-4 bg-gray-50 rounded-lg">
-      <div className="md:col-span-1">
-        <label className="block text-sm font-medium text-gray-700">
-          Traveller {index + 1} Age
-        </label>
-        <select
-          name="age"
-          value={traveller.age}
-          onChange={(e) => onTravellerChange(index, "age", e.target.value)}
-          className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="6m-50">6 months - 50 years</option>
-          <option value="51-60">51 - 60 years</option>
-          <option value="61-70">61 - 70 years</option>
-          <option value="71-75">71 - 75 years</option>
-          <option value="76-90">76 - 90 years</option>
-        </select>
-      </div>
-
-      <div className="md:col-span-1">
-        <label className="block text-sm font-medium text-gray-700">
-          Sum Insured (USD)
-        </label>
-        <select
-          name="sumInsured"
-          value={traveller.sumInsured}
-          onChange={(e) =>
-            onTravellerChange(index, "sumInsured", e.target.value)
-          }
-          className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="25000">$25,000 (Basic)</option>
-          <option value="50000">$50,000 (Economy)</option>
-          <option value="100000">$100,000 (Advanced)</option>
-          <option value="250000">$250,000 (Elite)</option>
-          <option value="500000">$500,000 (Supreme)</option>
-        </select>
-      </div>
-
-      {index > 0 && (
+    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
         <div className="md:col-span-1">
-          <button
-            onClick={() => onRemoveTraveller(index)}
-            className="w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600 transition"
+          <label className="block text-sm font-medium text-gray-700">
+            Traveller {index + 1} Age
+          </label>
+          <select
+            name="age"
+            value={traveller.age}
+            onChange={(e) => onTravellerChange(index, "age", e.target.value)}
+            className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           >
-            Remove Traveller
-          </button>
+            <option value="6m-50">6 months - 50 years</option>
+            <option value="51-60">51 - 60 years</option>
+            <option value="61-70">61 - 70 years</option>
+            <option value="71-75">71 - 75 years</option>
+            <option value="76-90">76 - 90 years</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Sum Insured (USD)
+          </label>
+          <select
+            name="sumInsured"
+            value={traveller.sumInsured}
+            onChange={(e) =>
+              onTravellerChange(index, "sumInsured", e.target.value)
+            }
+            disabled={isPlanDisabled} // Use the new prop here
+            className={`mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+              isPlanDisabled ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
+          >
+            <option value="25000">$25,000 (Basic)</option>
+            <option value="50000">$50,000 (Economy)</option>
+            <option value="100000">$100,000 (Advanced)</option>
+            <option value="250000">$250,000 (Elite)</option>
+            <option value="500000">$500,000 (Supreme)</option>
+          </select>
+        </div>
+
+        {index > 0 && (
+          <div className="md:col-span-1">
+            <button
+              onClick={() => onRemoveTraveller(index)}
+              className="w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-600 transition"
+            >
+              Remove Traveller
+            </button>
+          </div>
+        )}
+      </div>
+      {isSenior && (
+        <div className="mt-3 p-3 bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm rounded-md">
+          <strong>Note:</strong> A pre-acceptance medical checkup is required
+          for travellers over 60 years of age. Please see the "Policy Details"
+          tab for more information.
         </div>
       )}
     </div>

@@ -1,54 +1,95 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TRAVEL_PREMIUMS } from "../../data/travel-data";
 import TravelResults from "./TravelResults";
 import TravellerInput from "./TravellerInput";
+import PlanComparisonResults from "./PlanComparisonResults";
+
+const initialTravellerState = [{ id: 1, age: "6m-50", sumInsured: "25000" }];
+const initialInputsState = {
+  destination: "Worldwide including USA & Canada",
+  duration: "",
+  discount: "0",
+};
+const initialDatesState = { startDate: "", endDate: "" };
 
 const TravelCalculator = () => {
-  const [travellers, setTravellers] = useState([
-    { id: 1, age: "6m-50", sumInsured: "25000" },
-  ]);
-  const [inputs, setInputs] = useState({
-    destination: "Worldwide including USA & Canada",
-    duration: "7",
-    discount: "0",
-  });
+  const [travellers, setTravellers] = useState(initialTravellerState);
+  const [inputs, setInputs] = useState(initialInputsState);
+  const [dates, setDates] = useState(initialDatesState);
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
+  const [applyPlanToAll, setApplyPlanToAll] = useState(true);
+  const resultsRef = useRef(null);
 
-  // This effect clears the main results when inputs change
+  // Effect to scroll to results when they are generated
+  useEffect(() => {
+    if (results && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [results]);
+
+  // Effect to clear results when inputs change
   useEffect(() => {
     setResults(null);
-  }, [inputs, travellers]);
+  }, [inputs, travellers, dates]);
+
+  // Effect to calculate duration from dates
+  useEffect(() => {
+    if (dates.startDate && dates.endDate) {
+      const start = new Date(dates.startDate);
+      const end = new Date(dates.endDate);
+
+      if (end < start) {
+        setError("End date cannot be before the start date.");
+        setInputs((prev) => ({ ...prev, duration: "" }));
+        return;
+      }
+
+      const diffTime = Math.abs(end - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      if (diffDays > 180) {
+        setError("The maximum initial policy period is 180 days.");
+        setInputs((prev) => ({ ...prev, duration: "" }));
+      } else {
+        setError("");
+        setInputs((prev) => ({ ...prev, duration: diffDays.toString() }));
+      }
+    }
+  }, [dates]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // --- Start of Real-time Validation ---
-    if (name === "duration") {
-      const durationNum = parseInt(value, 10);
-      if (durationNum > 180) {
-        setError("The maximum initial policy period is 180 days.");
-      } else if (value && durationNum <= 0) {
-        setError("Please enter a valid trip duration.");
-      } else {
-        setError(""); // Clear error if the new value is valid
-      }
-    }
-    // --- End of Real-time Validation ---
-
     setInputs((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (e) => {
+    const { name, value } = e.target;
+    setDates((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleTravellerChange = (index, field, value) => {
     const newTravellers = [...travellers];
     newTravellers[index][field] = value;
+
+    if (applyPlanToAll && index === 0 && field === "sumInsured") {
+      for (let i = 1; i < newTravellers.length; i++) {
+        newTravellers[i].sumInsured = value;
+      }
+    }
     setTravellers(newTravellers);
   };
 
   const addTraveller = () => {
+    const firstTravellerSumInsured =
+      travellers.length > 0 ? travellers[0].sumInsured : "25000";
     setTravellers([
       ...travellers,
-      { id: Date.now(), age: "6m-50", sumInsured: "25000" },
+      {
+        id: Date.now(),
+        age: "6m-50",
+        sumInsured: applyPlanToAll ? firstTravellerSumInsured : "25000",
+      },
     ]);
   };
 
@@ -57,15 +98,23 @@ const TravelCalculator = () => {
     setTravellers(newTravellers);
   };
 
+  const handleReset = () => {
+    setTravellers(initialTravellerState);
+    setInputs(initialInputsState);
+    setDates(initialDatesState);
+    setResults(null);
+    setError("");
+    setApplyPlanToAll(true);
+  };
+
   const handleCalculate = () => {
-    // Final check before calculation, even with real-time validation
     if (error) return;
 
     const { destination, duration, discount } = inputs;
     const durationNum = parseInt(duration, 10);
 
     if (!durationNum || durationNum <= 0) {
-      setError("Please enter a valid trip duration.");
+      setError("Please select a valid start and end date.");
       return;
     }
 
@@ -142,21 +191,41 @@ const TravelCalculator = () => {
               traveller={traveller}
               onTravellerChange={handleTravellerChange}
               onRemoveTraveller={removeTraveller}
+              isPlanDisabled={applyPlanToAll && index > 0}
             />
           ))}
         </div>
-        <button
-          onClick={addTraveller}
-          className="text-sm font-semibold text-blue-600 hover:text-blue-800 mb-6"
-        >
-          + Add another traveller
-        </button>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+          <button
+            onClick={addTraveller}
+            className="text-sm font-semibold text-blue-600 hover:text-blue-800 mb-4 sm:mb-0"
+          >
+            + Add another traveller
+          </button>
+          {travellers.length > 1 && (
+            <div className="flex items-center">
+              <input
+                id="apply-to-all"
+                type="checkbox"
+                checked={applyPlanToAll}
+                onChange={(e) => setApplyPlanToAll(e.target.checked)}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label
+                htmlFor="apply-to-all"
+                className="ml-2 block text-sm text-gray-900"
+              >
+                Apply same plan to all travellers
+              </label>
+            </div>
+          )}
+        </div>
 
         <div className="border-t pt-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Trip Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Destination
@@ -171,22 +240,48 @@ const TravelCalculator = () => {
                 <option>Worldwide excluding USA & Canada</option>
               </select>
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Trip Duration (days)
+                Trip Start Date
+              </label>
+              <input
+                type="date"
+                name="startDate"
+                value={dates.startDate}
+                onChange={handleDateChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Trip End Date
+              </label>
+              <input
+                type="date"
+                name="endDate"
+                value={dates.endDate}
+                onChange={handleDateChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+
+            <div className="self-end">
+              <label className="block text-sm font-medium text-gray-700">
+                Duration (days)
               </label>
               <input
                 type="number"
                 name="duration"
                 value={inputs.duration}
-                onChange={handleInputChange}
-                className={`mt-1 block w-full p-3 border rounded-md shadow-sm ${
-                  error ? "border-red-500" : "border-gray-300"
-                }`}
+                readOnly
+                placeholder="-"
+                className="mt-1 block w-full p-3 border bg-gray-100 rounded-md shadow-sm text-center font-semibold"
               />
-              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
             </div>
-            <div>
+
+            <div className="md:col-span-2 lg:col-span-3">
               <label className="block text-sm font-medium text-gray-700">
                 Discount (%)
               </label>
@@ -203,21 +298,43 @@ const TravelCalculator = () => {
                 <option value="33.33">Staff Discount (33.33%)</option>
               </select>
             </div>
-            <div className="self-end md:col-start-3">
+            <div className="self-end flex gap-2">
               <button
                 onClick={handleCalculate}
-                disabled={!!error}
+                disabled={!!error || !inputs.duration}
                 className={`w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition ${
-                  error ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                  !!error || !inputs.duration
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-blue-700"
                 }`}
               >
-                Calculate Premium
+                Calculate
+              </button>
+              <button
+                onClick={handleReset}
+                className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition"
+              >
+                Reset
               </button>
             </div>
+            {error && (
+              <p className="mt-2 text-sm text-red-600 md:col-span-4">{error}</p>
+            )}
           </div>
         </div>
       </div>
-      {results && <TravelResults results={results} />}
+      <div ref={resultsRef}>
+        {results && (
+          <>
+            <TravelResults results={results} />
+            <PlanComparisonResults
+              results={results}
+              travellers={travellers}
+              inputs={inputs}
+            />
+          </>
+        )}
+      </div>
     </>
   );
 };
