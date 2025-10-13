@@ -65,7 +65,7 @@ const TravelResults = ({ results }) => {
             </p>
           </div>
           <div className="flex justify-between items-center text-green-600">
-            <p>Discount:</p>
+            <p>Discount ({results.discount}%):</p>
             <p className="font-semibold text-lg">
               - {formatCurrency(results.discountAmount)}
             </p>
@@ -77,7 +77,7 @@ const TravelResults = ({ results }) => {
             </p>
           </div>
           <div className="flex justify-between items-center">
-            <p className="text-gray-600">GST (18%):</p>
+            <p className="text-gray-600">GST ({results.gstPercentage}%):</p>
             <p className="font-semibold text-lg">
               {formatCurrency(results.gstAmount)}
             </p>
@@ -86,7 +86,7 @@ const TravelResults = ({ results }) => {
             <p className="text-gray-800 font-bold text-xl">
               Final Total Premium:
             </p>
-            <p className="font-bold text-2xl text-blue-600">
+            <p className="font-bold text-2xl text-teal-600">
               {formatCurrency(results.finalPremium)}
             </p>
           </div>

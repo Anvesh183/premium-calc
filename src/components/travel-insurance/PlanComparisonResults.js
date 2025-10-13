@@ -17,13 +17,13 @@ const formatBenefitValue = (value) => {
   return value;
 };
 
-// This helper function will calculate the premium for a given set of inputs
 const calculatePremiumForPlan = (
   sumInsured,
   travellers,
   duration,
   destination,
-  discount
+  discount,
+  gstPercentage
 ) => {
   let totalBasePremium = 0;
   const durationNum = parseInt(duration, 10);
@@ -37,7 +37,7 @@ const calculatePremiumForPlan = (
     const premiumData = TRAVEL_PREMIUMS[destination]?.[sumInsured]?.[
       premiumAgeBand
     ]?.find((p) => p.days >= durationNum);
-    if (!premiumData) return null; // Premium not available for this combination
+    if (!premiumData) return null;
 
     let basePremium = premiumData.premium;
     let ageLoading = 0;
@@ -49,12 +49,12 @@ const calculatePremiumForPlan = (
 
   const discountAmount = totalBasePremium * (parseFloat(discount) / 100);
   const premiumAfterDiscount = totalBasePremium - discountAmount;
-  const gstAmount = premiumAfterDiscount * 0.18;
+  const gstAmount = premiumAfterDiscount * (parseFloat(gstPercentage) / 100);
   return premiumAfterDiscount + gstAmount;
 };
 
 const PlanComparisonResults = ({ results, travellers, inputs }) => {
-  const currentSumInsured = travellers[0].sumInsured; // Assuming all travellers have the same SI
+  const currentSumInsured = travellers[0].sumInsured;
   const currentIndex = PLAN_ORDER.indexOf(currentSumInsured);
 
   const lowerPlanKey = currentIndex > 0 ? PLAN_ORDER[currentIndex - 1] : null;
@@ -67,7 +67,8 @@ const PlanComparisonResults = ({ results, travellers, inputs }) => {
         travellers,
         inputs.duration,
         inputs.destination,
-        inputs.discount
+        inputs.discount,
+        inputs.gstPercentage
       )
     : null;
   const higherPlanPremium = higherPlanKey
@@ -76,7 +77,8 @@ const PlanComparisonResults = ({ results, travellers, inputs }) => {
         travellers,
         inputs.duration,
         inputs.destination,
-        inputs.discount
+        inputs.discount,
+        inputs.gstPercentage
       )
     : null;
 
@@ -111,7 +113,6 @@ const PlanComparisonResults = ({ results, travellers, inputs }) => {
         Compare Your Plan
       </h3>
       <div className="space-y-4">
-        {/* Current Plan */}
         <div className="p-4 bg-blue-100 border border-blue-300 rounded-lg shadow-sm">
           <p className="font-bold text-center text-blue-800">
             Your Current Plan: {currentPlan.name} (
@@ -119,9 +120,7 @@ const PlanComparisonResults = ({ results, travellers, inputs }) => {
           </p>
         </div>
 
-        {/* Comparison Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Downgrade Option */}
           {lowerPlanKey && lowerPlanPremium && (
             <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
               <p className="font-semibold text-orange-800">
@@ -145,7 +144,6 @@ const PlanComparisonResults = ({ results, travellers, inputs }) => {
             </div>
           )}
 
-          {/* Upgrade Option */}
           {higherPlanKey && higherPlanPremium && (
             <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
               <p className="font-semibold text-green-800">

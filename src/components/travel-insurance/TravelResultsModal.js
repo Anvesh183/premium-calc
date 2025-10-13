@@ -124,7 +124,7 @@ const TravelResultsModal = ({ isOpen, onClose, results }) => {
                 </p>
               </div>
               <div className="flex justify-between items-center">
-                <p className="text-gray-600">GST (18%):</p>
+                <p className="text-gray-600">GST:</p>
                 <p className="font-semibold text-lg">
                   {formatCurrency(results.gstAmount)}
                 </p>

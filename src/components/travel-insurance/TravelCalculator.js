@@ -9,6 +9,7 @@ const initialInputsState = {
   destination: "Worldwide including USA & Canada",
   duration: "",
   discount: "0",
+  gstPercentage: "0", // New GST state, default to 0
 };
 const initialDatesState = { startDate: "", endDate: "" };
 
@@ -109,7 +110,7 @@ const TravelCalculator = () => {
   const handleCalculate = () => {
     if (error) return;
 
-    const { destination, duration, discount } = inputs;
+    const { destination, duration, discount, gstPercentage } = inputs;
     const durationNum = parseInt(duration, 10);
 
     if (!durationNum || durationNum <= 0) {
@@ -162,10 +163,11 @@ const TravelCalculator = () => {
 
     const discountAmount = totalBasePremium * (parseFloat(discount) / 100);
     const premiumAfterDiscount = totalBasePremium - discountAmount;
-    const gstAmount = premiumAfterDiscount * 0.18;
+    const gstAmount = premiumAfterDiscount * (parseFloat(gstPercentage) / 100);
     const finalPremium = premiumAfterDiscount + gstAmount;
 
     setResults({
+      ...inputs,
       totalBasePremium,
       travellerPremiums,
       discountAmount,
@@ -280,7 +282,7 @@ const TravelCalculator = () => {
               />
             </div>
 
-            <div className="md:col-span-2 lg:col-span-3">
+            <div>
               <label className="block text-sm font-medium text-gray-700">
                 Discount (%)
               </label>
@@ -297,7 +299,21 @@ const TravelCalculator = () => {
                 <option value="33.33">Staff Discount (33.33%)</option>
               </select>
             </div>
-            <div className="self-end flex gap-2">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                GST (%)
+              </label>
+              <input
+                type="number"
+                name="gstPercentage"
+                value={inputs.gstPercentage}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+
+            <div className="self-end flex gap-2 col-span-2">
               <button
                 onClick={handleCalculate}
                 disabled={!!error || !inputs.duration}
