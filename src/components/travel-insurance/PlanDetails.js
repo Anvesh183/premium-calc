@@ -1,13 +1,29 @@
 import React from "react";
 import { PLAN_BENEFITS, PLAN_ORDER } from "../../data/travel-plan-benefits";
 
+// This array now includes all benefits and their display labels.
+// The table will be generated from this list.
 const benefitRows = [
   { key: "Medical Expenses", label: "Medical Expenses" },
+  { key: "Deductible (Medical)", label: "Deductible (Medical)" },
   { key: "Hospital Cash", label: "Hospital Cash (max 5 days)" },
   { key: "Emergency Dental Care", label: "Emergency Dental Care" },
   { key: "Personal Accident", label: "Personal Accident" },
+  {
+    key: "Repatriation of Mortal Remains",
+    label: "Repatriation of Mortal Remains",
+  },
   { key: "Loss of Checked-in Baggage", label: "Loss of Checked-in Baggage" },
+  { key: "Delay in Baggage (>12 hrs)", label: "Delay in Baggage (>12 hrs)" },
+  { key: "Loss of Passport", label: "Loss of Passport" },
+  { key: "Personal Liability", label: "Personal Liability" },
+  {
+    key: "Emergency Financial Assistance",
+    label: "Emergency Financial Assistance",
+  },
+  { key: "Hijack Allowance (>12 hrs)", label: "Hijack Allowance (>12 hrs)" },
   { key: "Trip Cancellation", label: "Trip Cancellation" },
+  { key: "Missed Connection", label: "Missed Connection" },
 ];
 
 const PlanDetails = () => {
@@ -48,7 +64,7 @@ const PlanDetails = () => {
                 key={row.key}
                 className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
-                <td className="px-6 py-4">{row.label}</td>
+                <td className="px-6 py-4 font-semibold">{row.label}</td>
                 {PLAN_ORDER.map((sumInsured) => (
                   <td key={sumInsured} className="px-6 py-4 text-center">
                     {formatBenefit(PLAN_BENEFITS[sumInsured].benefits[row.key])}
