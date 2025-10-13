@@ -32,7 +32,10 @@ const GipsaGmcCalculator = () => {
     <div className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto gipsa-container">
         <div className="header">
-          <h1>GIPSA Staff GMC Premium Calculator</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
+            GIPSA Staff{" "}
+            <span className="text-teal-500">GMC Premium Calculator</span>
+          </h1>
           <div className="info-box">
             <span className="icon">ℹ️</span>
             <p>

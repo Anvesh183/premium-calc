@@ -21,19 +21,16 @@ const TravelCalculator = () => {
   const [applyPlanToAll, setApplyPlanToAll] = useState(true);
   const resultsRef = useRef(null);
 
-  // Effect to scroll to results when they are generated
   useEffect(() => {
     if (results && resultsRef.current) {
       resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [results]);
 
-  // Effect to clear results when inputs change
   useEffect(() => {
     setResults(null);
   }, [inputs, travellers, dates]);
 
-  // Effect to calculate duration from dates
   useEffect(() => {
     if (dates.startDate && dates.endDate) {
       const start = new Date(dates.startDate);
@@ -55,6 +52,8 @@ const TravelCalculator = () => {
         setError("");
         setInputs((prev) => ({ ...prev, duration: diffDays.toString() }));
       }
+    } else {
+      setInputs((prev) => ({ ...prev, duration: "" }));
     }
   }, [dates]);
 
@@ -198,7 +197,7 @@ const TravelCalculator = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
           <button
             onClick={addTraveller}
-            className="text-sm font-semibold text-blue-600 hover:text-blue-800 mb-4 sm:mb-0"
+            className="text-sm font-semibold text-teal-500 hover:text-teal-600 mb-4 sm:mb-0"
           >
             + Add another traveller
           </button>
@@ -209,7 +208,7 @@ const TravelCalculator = () => {
                 type="checkbox"
                 checked={applyPlanToAll}
                 onChange={(e) => setApplyPlanToAll(e.target.checked)}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
               />
               <label
                 htmlFor="apply-to-all"
@@ -302,10 +301,10 @@ const TravelCalculator = () => {
               <button
                 onClick={handleCalculate}
                 disabled={!!error || !inputs.duration}
-                className={`w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition ${
+                className={`w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg transition ${
                   !!error || !inputs.duration
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-blue-700"
+                    : "hover:bg-teal-600"
                 }`}
               >
                 Calculate

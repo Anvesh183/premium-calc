@@ -43,8 +43,8 @@ const TravelTabs = () => {
   const getTabClass = (tabName) => {
     return `px-4 py-3 font-semibold text-sm rounded-t-lg transition-colors duration-200 focus:outline-none whitespace-nowrap ${
       activeTab === tabName
-        ? "border-b-2 border-blue-600 text-blue-600"
-        : "text-gray-500 hover:text-blue-600"
+        ? "border-b-2 border-teal-500 text-teal-500"
+        : "text-gray-500 hover:text-teal-500"
     }`;
   };
 

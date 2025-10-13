@@ -222,10 +222,16 @@ const GipsaInputs = ({
           />
         </div>
         <div className="button-group">
-          <button className="btn primary" onClick={calculatePremiums}>
+          <button
+            className="btn primary bg-teal-500 hover:bg-teal-600 text-white border-teal-500"
+            onClick={calculatePremiums}
+          >
             Calculate
           </button>
-          <button className="btn" onClick={onReset}>
+          <button
+            className="btn bg-gray-200 hover:bg-gray-300 text-gray-800"
+            onClick={onReset}
+          >
             Reset
           </button>
         </div>

@@ -29,12 +29,10 @@ const ExtensionCalculator = () => {
       return;
     }
 
-    // --- Start of Exact Premium Lookup ---
     const extensionPremium =
       TRAVEL_EXTENSION_PREMIUMS[destination]?.[sumInsured]?.[age]?.[
         extensionDays
       ];
-    // --- End of Exact Premium Lookup ---
 
     if (extensionPremium === undefined) {
       setError(
@@ -141,7 +139,7 @@ const ExtensionCalculator = () => {
       <div className="mt-6">
         <button
           onClick={handleCalculate}
-          className="w-full md:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition"
+          className="w-full md:w-auto bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition"
         >
           Calculate Extension Premium
         </button>
@@ -171,7 +169,7 @@ const ExtensionCalculator = () => {
             </div>
             <div className="flex justify-between text-lg font-bold mt-2 border-t pt-2">
               <p>Total Payable:</p>
-              <p className="text-green-700">₹{result.finalPremium}</p>
+              <p className="text-teal-700">₹{result.finalPremium}</p>
             </div>
           </div>
         </div>

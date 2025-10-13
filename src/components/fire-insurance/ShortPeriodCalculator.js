@@ -102,7 +102,7 @@ const ShortPeriodCalculator = () => {
         <div>
           <button
             id="calculateShortPeriodBtn"
-            className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300"
+            className="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-teal-300"
             onClick={handleCalculate}
           >
             Calculate Short Period Premium

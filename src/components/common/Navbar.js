@@ -11,8 +11,8 @@ const Navbar = () => {
   const navLinkClasses = ({ isActive }) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 ${
       isActive
-        ? "text-blue-600 font-semibold"
-        : "text-gray-500 hover:text-blue-600"
+        ? "text-teal-500 font-semibold"
+        : "text-gray-500 hover:text-teal-500"
     }`;
 
   return (
@@ -20,12 +20,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link
-              to="/"
-              onClick={closeMobileMenu}
-              className="flex-shrink-0 text-xl font-bold text-gray-800"
-            >
-              Quote<span className="text-blue-600">Assist</span>
+            <Link to="/" onClick={closeMobileMenu} className="flex-shrink-0">
+              <img
+                src="/quote-assist.png"
+                alt="Quote Assist Logo"
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
           <div className="hidden md:block">
@@ -86,7 +86,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
-                    ? "bg-blue-50 text-blue-700"
+                    ? "bg-teal-50 text-teal-700"
                     : "text-gray-600 hover:bg-gray-50"
                 }`
               }
@@ -99,7 +99,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
-                    ? "bg-blue-50 text-blue-700"
+                    ? "bg-teal-50 text-teal-700"
                     : "text-gray-600 hover:bg-gray-50"
                 }`
               }
@@ -112,7 +112,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
-                    ? "bg-blue-50 text-blue-700"
+                    ? "bg-teal-50 text-teal-700"
                     : "text-gray-600 hover:bg-gray-50"
                 }`
               }

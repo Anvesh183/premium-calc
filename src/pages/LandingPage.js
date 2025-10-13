@@ -12,7 +12,7 @@ const LandingPage = () => {
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-blue-600"
+          className="h-6 w-6 text-teal-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -34,7 +34,7 @@ const LandingPage = () => {
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-blue-600"
+          className="h-6 w-6 text-teal-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -56,7 +56,7 @@ const LandingPage = () => {
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-blue-600"
+          className="h-6 w-6 text-teal-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -90,28 +90,28 @@ const LandingPage = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="text-center py-16 md:py-24 bg-gray-50">
+      <div className="text-center py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
         <motion.h1
-          className="text-4xl md:text-5xl font-extrabold text-gray-800"
+          className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-teal-500 to-slate-800 bg-clip-text text-transparent"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          Insurance Premium Calculators
+          Quote Assist
         </motion.h1>
         <motion.p
-          className="mt-2 text-sm text-gray-500"
+          className="mt-4 text-sm text-slate-500"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           Created by <b>Bachu Anvesh</b> (SR NO. 42244) — <b>NIACL</b>
         </motion.p>
         <motion.p
-          className="mt-4 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
+          className="mt-2 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
           Quickly and accurately calculate insurance premiums for various
           policies. Select a calculator below to get started.
@@ -124,7 +124,7 @@ const LandingPage = () => {
         >
           <a
             href="#calculators"
-            className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105"
+            className="bg-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-600 transition-transform transform hover:scale-105"
           >
             View Calculators
           </a>
@@ -133,7 +133,7 @@ const LandingPage = () => {
 
       {/* Why Choose Us Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
+        <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">
           Why Choose This Calculator?
         </h2>
         <motion.div
@@ -172,7 +172,7 @@ const LandingPage = () => {
             className="flex flex-col items-center"
             variants={itemVariants}
           >
-            <div className="bg-blue-100 text-blue-600 rounded-full h-16 w-16 flex items-center justify-center mb-4">
+            <div className="bg-teal-100 text-teal-600 rounded-full h-16 w-16 flex items-center justify-center mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8"
@@ -198,7 +198,7 @@ const LandingPage = () => {
             className="flex flex-col items-center"
             variants={itemVariants}
           >
-            <div className="bg-purple-100 text-purple-600 rounded-full h-16 w-16 flex items-center justify-center mb-4">
+            <div className="bg-pink-100 text-pink-600 rounded-full h-16 w-16 flex items-center justify-center mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8"
@@ -231,7 +231,8 @@ const LandingPage = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
         >
           {calculators.map((calc) => (
             <motion.div key={calc.to} variants={itemVariants}>

@@ -105,7 +105,7 @@ const ResultsModal = ({ isOpen, onClose, content }) => {
           </button>
           <button
             onClick={onClose}
-            className="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition"
+            className="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition"
           >
             Close
           </button>
