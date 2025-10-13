@@ -53,7 +53,7 @@ const TravelResultsModal = ({ isOpen, onClose, results }) => {
         <div id="printable-quote">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
-              Premium<span className="text-blue-600">Calc</span>
+              Quote<span className="text-blue-600">Assist</span>
             </h1>
             <p className="text-lg font-semibold text-gray-700">
               Overseas Travel Insurance Quote

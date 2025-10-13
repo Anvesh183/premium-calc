@@ -4,14 +4,15 @@ import { NavLink, Link } from "react-router-dom";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to close the mobile menu
   const closeMobileMenu = () => {
     setIsOpen(false);
   };
 
   const navLinkClasses = ({ isActive }) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300 ${
-      isActive ? "text-blue-600" : "text-gray-500 hover:text-blue-600"
+      isActive
+        ? "text-blue-600 font-semibold"
+        : "text-gray-500 hover:text-blue-600"
     }`;
 
   return (
@@ -21,10 +22,10 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link
               to="/"
-              onClick={closeMobileMenu} // Close menu on logo click as well
+              onClick={closeMobileMenu}
               className="flex-shrink-0 text-xl font-bold text-gray-800"
             >
-              Premium<span className="text-blue-600">Calc</span>
+              Quote<span className="text-blue-600">Assist</span>
             </Link>
           </div>
           <div className="hidden md:block">
@@ -81,7 +82,7 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <NavLink
               to="/fire-insurance"
-              onClick={closeMobileMenu} // Add onClick handler
+              onClick={closeMobileMenu}
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
@@ -94,7 +95,7 @@ const Navbar = () => {
             </NavLink>
             <NavLink
               to="/gipsa-gmc"
-              onClick={closeMobileMenu} // Add onClick handler
+              onClick={closeMobileMenu}
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
@@ -107,7 +108,7 @@ const Navbar = () => {
             </NavLink>
             <NavLink
               to="/travel-insurance"
-              onClick={closeMobileMenu} // Add onClick handler
+              onClick={closeMobileMenu}
               className={({ isActive }) =>
                 `block px-3 py-2 rounded-md text-base font-medium ${
                   isActive
