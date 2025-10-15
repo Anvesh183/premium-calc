@@ -17,7 +17,7 @@ export const useGipsaStore = create((set) => ({
   // --- STATE ---
   members: initialMemberState,
   payBand: 8,
-  gstPct: 18,
+  gstPct: 0, // Default GST is now 0
   results: { rows: [], monthlySubsidized: 0, monthlyGrand: 0 },
   showResults: false,
 
@@ -36,7 +36,7 @@ export const useGipsaStore = create((set) => ({
     set({
       members: initialMemberState,
       payBand: 8,
-      gstPct: 18,
+      gstPct: 0, // Reset GST to 0
       results: { rows: [], monthlySubsidized: 0, monthlyGrand: 0 },
       showResults: false,
     }),

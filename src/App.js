@@ -17,6 +17,9 @@ const GipsaGmcCalculator = lazy(() => import("./pages/GipsaGmcCalculator"));
 const TravelInsuranceCalculator = lazy(() =>
   import("./pages/TravelInsuranceCalculator")
 );
+const FloaterMediclaimCalculator = lazy(() =>
+  import("./pages/FloaterMediclaimCalculator")
+); // Import the new calculator page
 
 const AppLayout = () => (
   <>
@@ -47,6 +50,10 @@ function App() {
             <Route
               path="travel-insurance"
               element={<TravelInsuranceCalculator />}
+            />
+            <Route
+              path="floater-mediclaim"
+              element={<FloaterMediclaimCalculator />}
             />
           </Route>
         </Routes>

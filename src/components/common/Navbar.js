@@ -39,6 +39,9 @@ const Navbar = () => {
               <NavLink to="/travel-insurance" className={navLinkClasses}>
                 Travel Insurance
               </NavLink>
+              <NavLink to="/floater-mediclaim" className={navLinkClasses}>
+                Floater Mediclaim
+              </NavLink>
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -118,6 +121,19 @@ const Navbar = () => {
               }
             >
               Travel Insurance
+            </NavLink>
+            <NavLink
+              to="/floater-mediclaim"
+              onClick={closeMobileMenu}
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive
+                    ? "bg-teal-50 text-teal-700"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`
+              }
+            >
+              Floater Mediclaim
             </NavLink>
           </div>
         </div>
