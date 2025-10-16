@@ -9,7 +9,7 @@ const initialInputsState = {
   destination: "Worldwide including USA & Canada",
   duration: "",
   discount: "0",
-  gstPercentage: "0", // New GST state, default to 0
+  gstPercentage: "0", // Default GST to 0
 };
 const initialDatesState = { startDate: "", endDate: "" };
 
@@ -226,16 +226,16 @@ const TravelCalculator = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Trip Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Destination
               </label>
               <select
                 name="destination"
                 value={inputs.destination}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+                className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
               >
                 <option>Worldwide including USA & Canada</option>
                 <option>Worldwide excluding USA & Canada</option>
@@ -243,7 +243,7 @@ const TravelCalculator = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Trip Start Date
               </label>
               <input
@@ -251,12 +251,12 @@ const TravelCalculator = () => {
                 name="startDate"
                 value={dates.startDate}
                 onChange={handleDateChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+                className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Trip End Date
               </label>
               <input
@@ -264,12 +264,12 @@ const TravelCalculator = () => {
                 name="endDate"
                 value={dates.endDate}
                 onChange={handleDateChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+                className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
 
-            <div className="self-end">
-              <label className="block text-sm font-medium text-gray-700">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Duration (days)
               </label>
               <input
@@ -278,19 +278,19 @@ const TravelCalculator = () => {
                 value={inputs.duration}
                 readOnly
                 placeholder="-"
-                className="mt-1 block w-full p-3 border bg-gray-100 rounded-md shadow-sm text-center font-semibold"
+                className="w-full p-3 border bg-gray-100 rounded-md shadow-sm text-center font-semibold"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Discount (%)
               </label>
               <select
                 name="discount"
                 value={inputs.discount}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+                className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
               >
                 <option value="0">No Discount</option>
                 <option value="10">Digital Discount (10%)</option>
@@ -301,7 +301,7 @@ const TravelCalculator = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 GST (%)
               </label>
               <input
@@ -309,33 +309,30 @@ const TravelCalculator = () => {
                 name="gstPercentage"
                 value={inputs.gstPercentage}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+                className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
-
-            <div className="self-end flex gap-2 col-span-2">
-              <button
-                onClick={handleCalculate}
-                disabled={!!error || !inputs.duration}
-                className={`w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg transition ${
-                  !!error || !inputs.duration
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-teal-600"
-                }`}
-              >
-                Calculate
-              </button>
-              <button
-                onClick={handleReset}
-                className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition"
-              >
-                Reset
-              </button>
-            </div>
-            {error && (
-              <p className="mt-2 text-sm text-red-600 md:col-span-4">{error}</p>
-            )}
           </div>
+          <div className="mt-6 pt-6 border-t flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={handleCalculate}
+              disabled={!!error || !inputs.duration}
+              className={`w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg transition ${
+                !!error || !inputs.duration
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-teal-600"
+              }`}
+            >
+              Calculate
+            </button>
+            <button
+              onClick={handleReset}
+              className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition"
+            >
+              Reset
+            </button>
+          </div>
+          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
         </div>
       </div>
       <div ref={resultsRef}>
