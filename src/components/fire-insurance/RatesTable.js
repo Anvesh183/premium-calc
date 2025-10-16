@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const RatesTable = ({ allRates, filteredRates, setFilteredRates }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sectionFilter, setSectionFilter] = useState("");
 
-  const handleFilterChange = () => {
+  useEffect(() => {
     let rates = allRates;
     if (sectionFilter) {
       rates = rates.filter((rate) => rate.section === sectionFilter);
@@ -17,7 +17,7 @@ const RatesTable = ({ allRates, filteredRates, setFilteredRates }) => {
       );
     }
     setFilteredRates(rates);
-  };
+  }, [searchQuery, sectionFilter, allRates, setFilteredRates]);
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
@@ -36,10 +36,7 @@ const RatesTable = ({ allRates, filteredRates, setFilteredRates }) => {
             id="sectionFilter"
             className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700 shadow-sm"
             value={sectionFilter}
-            onChange={(e) => {
-              setSectionFilter(e.target.value);
-              handleFilterChange();
-            }}
+            onChange={(e) => setSectionFilter(e.target.value)}
           >
             <option value="">All Sections</option>
             <option value="III">III - Dwellings, Offices, etc.</option>
@@ -62,10 +59,7 @@ const RatesTable = ({ allRates, filteredRates, setFilteredRates }) => {
             placeholder="e.g., 'Hospital' or '2014'..."
             className="w-full p-3 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-700 shadow-sm"
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              handleFilterChange();
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <div className="absolute inset-y-0 left-0 top-6 pl-3 flex items-center pointer-events-none">
             <svg
