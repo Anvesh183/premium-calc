@@ -62,7 +62,44 @@ const FloaterMediclaimEligibility = () => {
           <li>
             <strong>Mid-term Additions:</strong> Flexibility to add a newly
             married spouse or a newborn baby (after 3 months) during the policy
-            term on a pro-rata premium basis.
+            term on a pro-rata premium basi.
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          Sum Insured Enhancement at Renewal
+        </h3>
+        <p className="text-gray-600 mb-2">
+          You can request to increase your Sum Insured at the time of renewal,
+          subject to the following conditions:
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-gray-600">
+          <li>
+            <strong>Up to 50 years:</strong> Enhancement is allowed up to a Sum
+            Insured of ₹15 lakhs without a medical examination.
+          </li>
+          <li>
+            <strong>51 to 60 years:</strong> Enhancement by up to two slabs is
+            allowed without a medical examination. For an enhancement up to ₹15
+            lakhs, a medical examination is required.
+          </li>
+          <li>
+            <strong>61 to 65 years:</strong> Enhancement by one slab is allowed,
+            but a medical examination is required.
+          </li>
+          <li>
+            <strong>Enhancement is not available for:</strong>
+            <ul className="list-disc list-inside ml-6">
+              <li>Insured persons over 65 years of age.</li>
+              <li>
+                Individuals who have been hospitalized in the last two years .
+              </li>
+              <li>
+                Those suffering from chronic, recurring, or critical illnesses .
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
