@@ -34,19 +34,29 @@ const initialInputs = {
   medicalLoading: "0",
 };
 
+const insuranceFacts = [
+  "The concept of insurance dates back to ancient Babylon and China, where merchants pooled resources to cover losses.",
+  "The Great Fire of London in 1666 led to the establishment of the first modern fire insurance companies.",
+  "Lloyd's of London, one of the most famous insurance markets, started in a coffee house in the 17th century.",
+  "An 'Act of God' in insurance is an event caused by natural forces without human intervention, like a hurricane or earthquake.",
+  "The most expensive thing ever insured is the International Space Station.",
+];
+
 const FloaterMediclaimInputs = () => {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [premiumData, setPremiumData] = useState(null);
+  const [fact, setFact] = useState("");
   const resultsRef = useRef(null);
 
-  // Fetch all premium data from Supabase on component mount
+  // Fetch all premium data and set a random fact on component mount
   useEffect(() => {
+    setFact(insuranceFacts[Math.floor(Math.random() * insuranceFacts.length)]);
+
     const fetchPremiums = async () => {
       setLoading(true);
-      // Query the table directly from the public schema
       const { data, error } = await supabase
         .from("floater_mediclaim_premiums")
         .select("age, sum_insured, zone, premium");
@@ -275,12 +285,15 @@ const FloaterMediclaimInputs = () => {
 
   if (loading) {
     return (
-      <div className="card text-center">
-        <h2 className="text-xl font-semibold text-gray-700">
-          Loading Premium Data...
+      <div className="card text-center p-8">
+        <div className="flex justify-center mb-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+        </div>
+        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+          Connecting to the database...
         </h2>
-        <p className="text-gray-500">
-          Connecting to the database, please wait.
+        <p className="text-sm text-gray-500 italic">
+          <strong>Did you know?</strong> {fact}
         </p>
       </div>
     );
@@ -298,7 +311,7 @@ const FloaterMediclaimInputs = () => {
           </p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Zone

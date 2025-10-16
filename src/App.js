@@ -19,7 +19,11 @@ const TravelInsuranceCalculator = lazy(() =>
 );
 const FloaterMediclaimCalculator = lazy(() =>
   import("./pages/FloaterMediclaimCalculator")
-); // Import the new calculator page
+);
+const NewIndiaMediclaimCalculator = lazy(() =>
+  import("./pages/NewIndiaMediclaimCalculator")
+);
+const YuvaBharatCalculator = lazy(() => import("./pages/YuvaBharatCalculator"));
 
 const AppLayout = () => (
   <>
@@ -55,6 +59,11 @@ function App() {
               path="floater-mediclaim"
               element={<FloaterMediclaimCalculator />}
             />
+            <Route
+              path="new-india-mediclaim"
+              element={<NewIndiaMediclaimCalculator />}
+            />
+            <Route path="yuva-bharat" element={<YuvaBharatCalculator />} />
           </Route>
         </Routes>
       </Suspense>
