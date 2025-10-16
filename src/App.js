@@ -8,6 +8,7 @@ import {
 import { motion } from "framer-motion";
 import Navbar from "./components/common/Navbar";
 import Spinner from "./components/common/Spinner";
+import Footer from "./components/common/Footer"; // Import the new Footer component
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const FireInsuranceCalculator = lazy(() =>
@@ -26,9 +27,10 @@ const NewIndiaMediclaimCalculator = lazy(() =>
 const YuvaBharatCalculator = lazy(() => import("./pages/YuvaBharatCalculator"));
 
 const AppLayout = () => (
-  <>
+  <div className="flex flex-col min-h-screen">
     <Navbar />
     <motion.main
+      className="flex-grow"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -36,7 +38,8 @@ const AppLayout = () => (
     >
       <Outlet />
     </motion.main>
-  </>
+    <Footer />
+  </div>
 );
 
 function App() {

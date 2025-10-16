@@ -118,8 +118,8 @@ const LandingPage = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Quickly and accurately calculate insurance premiums for various
-          policies. Select a calculator below to get started.
+          Quickly calculate insurance premiums for various policies. Select a
+          calculator below to get started.
         </motion.p>
       </div>
 
