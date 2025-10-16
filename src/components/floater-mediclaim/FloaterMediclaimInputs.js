@@ -87,9 +87,9 @@ const FloaterMediclaimInputs = () => {
     setResults(null);
   };
 
-  const handleMemberChange = (id, field, value) => {
+  const handleMemberChange = (id, updates) => {
     const newMembers = inputs.members.map((m) =>
-      m.id === id ? { ...m, [field]: value } : m
+      m.id === id ? { ...m, ...updates } : m
     );
     setInputs((prev) => ({ ...prev, members: newMembers }));
     setResults(null);

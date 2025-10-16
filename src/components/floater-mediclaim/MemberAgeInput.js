@@ -1,16 +1,37 @@
 import React from "react";
 
-// Helper function to calculate age from DOB
-const calculateAge = (dob) => {
-  if (!dob) return "";
-  const birthDate = new Date(dob);
+// Helper function to calculate age from a dd/mm/yyyy string
+const calculateAge = (dobString) => {
+  if (!dobString) return "";
+  const parts = dobString.split("/");
+  if (parts.length !== 3) return "";
+
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JS Date
+  const year = parseInt(parts[2], 10);
+
+  // Basic validation for parts
+  if (isNaN(day) || isNaN(month) || isNaN(year) || year.toString().length < 4) {
+    return "";
+  }
+
+  const birthDate = new Date(year, month, day);
+  // Check if the created date is valid and matches the input
+  if (
+    birthDate.getFullYear() !== year ||
+    birthDate.getMonth() !== month ||
+    birthDate.getDate() !== day
+  ) {
+    return "";
+  }
+
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const m = today.getMonth() - birthDate.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }
-  return age >= 0 ? age : 0;
+  return age >= 0 ? age.toString() : "";
 };
 
 const MemberAgeInput = ({
@@ -23,15 +44,13 @@ const MemberAgeInput = ({
 }) => {
   const handleToggle = () => {
     const newInputType = member.inputType === "age" ? "dob" : "age";
-    // Corrected function call below
-    onMemberChange(member.id, "inputType", newInputType);
+    onMemberChange(member.id, { inputType: newInputType });
   };
 
   const handleDobChange = (e) => {
     const dob = e.target.value;
     const age = calculateAge(dob);
-    onMemberChange(member.id, "dob", dob);
-    onMemberChange(member.id, "age", age.toString()); // Update age automatically
+    onMemberChange(member.id, { dob, age });
   };
 
   const si = parseInt(sumInsured);
@@ -70,23 +89,36 @@ const MemberAgeInput = ({
           {member.inputType === "age" ? (
             <input
               type="number"
-              value={member.age}
-              onChange={(e) => onMemberChange(member.id, "age", e.target.value)}
+              value={member.age || ""}
+              onChange={(e) =>
+                onMemberChange(member.id, { age: e.target.value })
+              }
               className="block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               placeholder="Enter Age"
             />
           ) : (
-            <input
-              type="date"
-              value={member.dob}
-              onChange={handleDobChange}
-              className="block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-            />
+            <div>
+              <input
+                type="text"
+                value={member.dob || ""}
+                onChange={handleDobChange}
+                className="block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                placeholder="dd/mm/yyyy"
+              />
+              {member.age && (
+                <p className="text-xs text-gray-600 mt-1 pl-1">
+                  Calculated Age:{" "}
+                  <span className="font-bold text-teal-600">
+                    {member.age} years
+                  </span>
+                </p>
+              )}
+            </div>
           )}
         </div>
 
         {/* Remove Button */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 text-right">
           {canRemove && (
             <button
               type="button"
@@ -105,7 +137,7 @@ const MemberAgeInput = ({
             type="checkbox"
             checked={member.optionalCover1}
             onChange={(e) =>
-              onMemberChange(member.id, "optionalCover1", e.target.checked)
+              onMemberChange(member.id, { optionalCover1: e.target.checked })
             }
             className="h-4 w-4 text-teal-600 border-gray-300 rounded"
           />
@@ -122,7 +154,7 @@ const MemberAgeInput = ({
             type="checkbox"
             checked={member.optionalCover2}
             onChange={(e) =>
-              onMemberChange(member.id, "optionalCover2", e.target.checked)
+              onMemberChange(member.id, { optionalCover2: e.target.checked })
             }
             disabled={si < 500000}
             className="h-4 w-4 text-teal-600 border-gray-300 rounded"
@@ -140,7 +172,7 @@ const MemberAgeInput = ({
             type="checkbox"
             checked={member.optionalCover3}
             onChange={(e) =>
-              onMemberChange(member.id, "optionalCover3", e.target.checked)
+              onMemberChange(member.id, { optionalCover3: e.target.checked })
             }
             disabled={si < 800000}
             className="h-4 w-4 text-teal-600 border-gray-300 rounded"
@@ -158,7 +190,7 @@ const MemberAgeInput = ({
             type="checkbox"
             checked={member.optionalCover4}
             onChange={(e) =>
-              onMemberChange(member.id, "optionalCover4", e.target.checked)
+              onMemberChange(member.id, { optionalCover4: e.target.checked })
             }
             disabled={si < 800000}
             className="h-4 w-4 text-teal-600 border-gray-300 rounded"
