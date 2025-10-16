@@ -19,6 +19,7 @@ const MemberAgeInput = ({
   onMemberChange,
   onRemoveMember,
   canRemove,
+  sumInsured,
 }) => {
   const handleToggle = () => {
     const newInputType = member.inputType === "age" ? "dob" : "age";
@@ -33,9 +34,11 @@ const MemberAgeInput = ({
     onMemberChange(member.id, "age", age.toString()); // Update age automatically
   };
 
+  const si = parseInt(sumInsured);
+
   return (
     <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
         <p className="text-sm font-medium text-gray-700 md:col-span-1">
           Member {index + 1}
         </p>
@@ -82,25 +85,6 @@ const MemberAgeInput = ({
           )}
         </div>
 
-        {/* Is Girl Child Checkbox */}
-        <div className="flex items-center md:col-span-1">
-          <input
-            id={`isGirl-${member.id}`}
-            type="checkbox"
-            checked={member.isGirl}
-            onChange={(e) =>
-              onMemberChange(member.id, "isGirl", e.target.checked)
-            }
-            className="h-4 w-4 text-teal-600 border-gray-300 rounded"
-          />
-          <label
-            htmlFor={`isGirl-${member.id}`}
-            className="ml-2 text-sm text-gray-700"
-          >
-            Girl Child?
-          </label>
-        </div>
-
         {/* Remove Button */}
         <div className="md:col-span-1">
           {canRemove && (
@@ -112,6 +96,79 @@ const MemberAgeInput = ({
               Remove
             </button>
           )}
+        </div>
+      </div>
+      <div className="mt-4 pt-4 border-t grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex items-start">
+          <input
+            id={`optionalCover1-${member.id}`}
+            type="checkbox"
+            checked={member.optionalCover1}
+            onChange={(e) =>
+              onMemberChange(member.id, "optionalCover1", e.target.checked)
+            }
+            className="h-4 w-4 text-teal-600 border-gray-300 rounded"
+          />
+          <label
+            htmlFor={`optionalCover1-${member.id}`}
+            className="ml-2 text-xs text-gray-700"
+          >
+            No Prop. Deduction
+          </label>
+        </div>
+        <div className="flex items-start">
+          <input
+            id={`optionalCover2-${member.id}`}
+            type="checkbox"
+            checked={member.optionalCover2}
+            onChange={(e) =>
+              onMemberChange(member.id, "optionalCover2", e.target.checked)
+            }
+            disabled={si < 500000}
+            className="h-4 w-4 text-teal-600 border-gray-300 rounded"
+          />
+          <label
+            htmlFor={`optionalCover2-${member.id}`}
+            className="ml-2 text-xs text-gray-700"
+          >
+            Maternity Cover
+          </label>
+        </div>
+        <div className="flex items-start">
+          <input
+            id={`optionalCover3-${member.id}`}
+            type="checkbox"
+            checked={member.optionalCover3}
+            onChange={(e) =>
+              onMemberChange(member.id, "optionalCover3", e.target.checked)
+            }
+            disabled={si < 800000}
+            className="h-4 w-4 text-teal-600 border-gray-300 rounded"
+          />
+          <label
+            htmlFor={`optionalCover3-${member.id}`}
+            className="ml-2 text-xs text-gray-700"
+          >
+            Cataract Limit
+          </label>
+        </div>
+        <div className="flex items-start">
+          <input
+            id={`optionalCover4-${member.id}`}
+            type="checkbox"
+            checked={member.optionalCover4}
+            onChange={(e) =>
+              onMemberChange(member.id, "optionalCover4", e.target.checked)
+            }
+            disabled={si < 800000}
+            className="h-4 w-4 text-teal-600 border-gray-300 rounded"
+          />
+          <label
+            htmlFor={`optionalCover4-${member.id}`}
+            className="ml-2 text-xs text-gray-700"
+          >
+            Non-Medical Items
+          </label>
         </div>
       </div>
     </div>

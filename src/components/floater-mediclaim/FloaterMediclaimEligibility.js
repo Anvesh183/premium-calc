@@ -26,38 +26,63 @@ const FloaterMediclaimEligibility = () => {
             the policy if it is renewed without any break.
           </li>
           <li>
-            <strong>Family Definition:</strong> The family consists of the
-            insured, spouse, and up to two dependent children.
+            <strong>Family Definition:</strong> You can cover yourself, your
+            spouse, dependent children, dependent parents, dependent siblings,
+            and wards under a single policy. A minimum of two members is
+            required.
           </li>
         </ul>
       </div>
 
       <div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">
-          Salient Features
+          Salient Features & Discounts
         </h3>
         <ul className="list-disc list-inside space-y-2 text-gray-600">
-          <li>This is a long-term policy, available for 1, 2, or 3 years.</li>
           <li>
-            Provides reimbursement of hospitalization expenses for
-            illness/diseases or injury sustained.
+            <strong>Long-Term Policy:</strong> Available for 1, 2, or 3-year
+            terms with attractive discounts.
           </li>
           <li>
-            No medical examination is required for persons up to 50 years of age
-            without any adverse medical history.
+            <strong>Cumulative Bonus:</strong> Get a 25% increase in Sum Insured
+            for each claim-free year, up to a maximum of 50%.
           </li>
           <li>
-            Pre-acceptance medical check-up is required for persons over 50
-            years or those with adverse medical history. 50% of the check-up
-            cost is reimbursed if the proposal is accepted.
+            <strong>Family Discount:</strong> 5% for 2 members, 10% for 3
+            members, and 15% for 4 or more members.
           </li>
           <li>
-            Family discount of 5% on the total premium if more than one person
-            is covered.
+            <strong>Long-Term Discounts:</strong> 5% for a 2-year policy and 7%
+            for a 3-year policy.
           </li>
           <li>
-            Long-term policy discounts: 5% for a 2-year policy and 7.5% for a
-            3-year policy on the total premium.
+            <strong>Digital Discount:</strong> A 10% discount is available for
+            policies purchased online.
+          </li>
+          <li>
+            <strong>Mid-term Additions:</strong> Flexibility to add a newly
+            married spouse or a newborn baby (after 3 months) during the policy
+            term on a pro-rata premium basis.
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          Pre-acceptance Medical Check-up
+        </h3>
+        <ul className="list-disc list-inside space-y-2 text-gray-600">
+          <li>
+            Required for all members aged 51 and above who are taking the policy
+            for the first time.
+          </li>
+          <li>
+            Required for individuals with an adverse medical history,
+            irrespective of age.
+          </li>
+          <li>
+            If the proposal is accepted, 50% of the check-up cost will be
+            reimbursed.
           </li>
         </ul>
       </div>

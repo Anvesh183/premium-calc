@@ -22,8 +22,8 @@ const FloaterMediclaimCoverages = () => {
             Medicines, etc.
           </li>
           <li>
-            Emergency Ambulance charges up to a maximum of ₹2,500 per policy
-            period.
+            Emergency Ambulance charges up to a maximum of 1% of the Sum Insured
+            per event.
           </li>
         </ul>
       </div>
@@ -47,15 +47,36 @@ const FloaterMediclaimCoverages = () => {
           </li>
           <li>
             <strong>Cataract Surgery:</strong> Covered up to 10% of the Sum
-            Insured, with a maximum limit of ₹1,00,000.
+            Insured, with a maximum limit of ₹50,000 per eye.
           </li>
           <li>
-            <strong>Ayurvedic/Homeopathic/Unani Treatment:</strong> Covered up
-            to 25% of the Sum Insured if treated in a government hospital.
+            <strong>AYUSH Treatment:</strong> Covered up to 100% of the Sum
+            Insured if treated in a government hospital.
           </li>
           <li>
             <strong>New Born Baby Cover:</strong> Covered from birth until
             policy expiry if the mother is insured for 24 continuous months.
+          </li>
+          <li>
+            <strong>Hospital Cash:</strong> 0.1% of Sum Insured per day of
+            hospitalization.
+          </li>
+          <li>
+            <strong>Critical Care Benefit:</strong> 10% of the Sum Insured is
+            paid as an additional benefit for specified critical illnesses.
+          </li>
+          <li>
+            <strong>Organ Transplant:</strong> Covers the donor's
+            hospitalization expenses.
+          </li>
+          <li>
+            <strong>Dental Treatment:</strong> Covers inpatient dental treatment
+            required due to an accident or illness.
+          </li>
+          <li>
+            <strong>Modern Treatments:</strong> A range of modern treatments
+            like robotic surgeries and immunotherapy are covered up to specified
+            sub-limits.
           </li>
         </ul>
       </div>

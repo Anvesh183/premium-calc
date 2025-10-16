@@ -1,22 +1,36 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FLOATER_MEDICLAIM_PREMIUMS } from "../../data/floater-mediclaim-data";
+import { supabase } from "../../supabaseClient"; // Make sure this path is correct
+import { FLOATER_MEDICLAIM_PREMIUMS as optionalCoverData } from "../../data/floater-mediclaim-data";
 import FloaterMediclaimResults from "./FloaterMediclaimResults";
-import MemberAgeInput from "./MemberAgeInput"; // Import the new component
+import MemberAgeInput from "./MemberAgeInput";
 
 const initialInputs = {
-  sumInsured: "800000",
+  sumInsured: "500000",
   zone: "Zone I",
   members: [
-    { id: 1, age: "30", dob: "", inputType: "age", isGirl: false },
-    { id: 2, age: "28", dob: "", inputType: "age", isGirl: false },
+    {
+      id: 1,
+      age: "30",
+      dob: "",
+      inputType: "age",
+      optionalCover1: false,
+      optionalCover2: false,
+      optionalCover3: false,
+      optionalCover4: false,
+    },
+    {
+      id: 2,
+      age: "28",
+      dob: "",
+      inputType: "age",
+      optionalCover1: false,
+      optionalCover2: false,
+      optionalCover3: false,
+      optionalCover4: false,
+    },
   ],
   policyTerm: "1",
-  optionalCover1: false,
-  optionalCover2: false,
-  optionalCover3: false,
-  optionalCover4: false,
   onlineDiscount: false,
-  existingCustomerDiscount: false,
   medicalLoading: "0",
 };
 
@@ -24,7 +38,35 @@ const FloaterMediclaimInputs = () => {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [premiumData, setPremiumData] = useState(null);
   const resultsRef = useRef(null);
+
+  // Fetch all premium data from Supabase on component mount
+  useEffect(() => {
+    const fetchPremiums = async () => {
+      setLoading(true);
+      // Query the table directly from the public schema
+      const { data, error } = await supabase
+        .from("floater_mediclaim_premiums")
+        .select("age, sum_insured, zone, premium");
+
+      if (error) {
+        console.error("Error fetching premiums:", error);
+        setError("Could not load premium data from the database.");
+      } else {
+        setPremiumData(data);
+      }
+      setLoading(false);
+    };
+    fetchPremiums();
+  }, []);
+
+  useEffect(() => {
+    if (results && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [results]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -56,7 +98,16 @@ const FloaterMediclaimInputs = () => {
       ...prev,
       members: [
         ...prev.members,
-        { id: newId, age: "25", dob: "", inputType: "age", isGirl: false },
+        {
+          id: newId,
+          age: "25",
+          dob: "",
+          inputType: "age",
+          optionalCover1: false,
+          optionalCover2: false,
+          optionalCover3: false,
+          optionalCover4: false,
+        },
       ],
     }));
   };
@@ -72,37 +123,38 @@ const FloaterMediclaimInputs = () => {
     }));
   };
 
-  useEffect(() => {
-    if (results && resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [results]);
+  const handleReset = () => {
+    setInputs(initialInputs);
+    setResults(null);
+    setError("");
+  };
+
+  const getAgeBandForOptionalCover1 = (age) => {
+    if (age <= 35) return "Upto 35";
+    if (age <= 45) return "36-45";
+    if (age <= 50) return "46-50";
+    if (age <= 55) return "51-55";
+    if (age <= 60) return "56-60";
+    if (age <= 65) return "61-65";
+    return ">65";
+  };
 
   const handleCalculate = () => {
+    if (loading || !premiumData) {
+      setError("Premium data is still loading. Please wait.");
+      return;
+    }
+
     const {
       sumInsured,
       zone,
-      adults,
-      adult1Age,
-      adult2Age,
-      children,
-      child1Age,
-      child2Age,
-      isGirlChild1,
-      isGirlChild2,
+      members,
       policyTerm,
-      optionalCover1,
-      optionalCover2,
-      optionalCover3,
-      optionalCover4,
       onlineDiscount,
-      existingCustomerDiscount,
       medicalLoading,
     } = inputs;
     const si = parseInt(sumInsured);
-    const numAdults = parseInt(adults);
-    const numChildren = parseInt(children);
-    const totalMembers = numAdults + numChildren;
+    const totalMembers = members.length;
 
     if (totalMembers < 2) {
       setError("This is a floater policy and requires a minimum of 2 members.");
@@ -114,74 +166,73 @@ const FloaterMediclaimInputs = () => {
     }
     setError("");
 
-    const premiumDataByZone = FLOATER_MEDICLAIM_PREMIUMS[zone];
-    if (!premiumDataByZone) {
-      setError("Premium data not found for the selected zone.");
-      return;
+    let totalBasePremium = 0;
+    const zoneForLookup = zone === "Zone I" ? "Zone 1" : "Zone 2";
+    const memberWisePremiums = [];
+
+    for (const member of members) {
+      const age = parseInt(member.age, 10);
+      if (isNaN(age) || age < 0 || age > 100) {
+        setError(
+          `Invalid age: ${member.age}. Please enter a valid age for all members.`
+        );
+        return;
+      }
+      const rate = premiumData.find(
+        (p) =>
+          p.age === age &&
+          p.sum_insured === si &&
+          p.zone.trim() === zoneForLookup
+      );
+      if (!rate) {
+        setError(
+          `A premium could not be found for a member with age ${age} in ${zone} for the selected Sum Insured.`
+        );
+        return;
+      }
+      const basePremiumForMember = rate.premium;
+      totalBasePremium += basePremiumForMember;
+
+      let optionalCover1ForMember = 0;
+      if (member.optionalCover1) {
+        const ageBand = getAgeBandForOptionalCover1(age);
+        optionalCover1ForMember =
+          optionalCoverData.optionalCover1[ageBand]?.[si] || 0;
+      }
+
+      const optionalCover2ForMember =
+        member.optionalCover2 && si >= 500000
+          ? optionalCoverData.optionalCover2[si] || 0
+          : 0;
+      const optionalCover3ForMember =
+        member.optionalCover3 && si >= 800000
+          ? optionalCoverData.optionalCover3[si] || 0
+          : 0;
+      const optionalCover4ForMember =
+        member.optionalCover4 && si >= 800000
+          ? optionalCoverData.optionalCover4.premium
+          : 0;
+
+      memberWisePremiums.push({
+        ...member,
+        basePremium: basePremiumForMember,
+        optionalCover1Premium: optionalCover1ForMember,
+        optionalCover2Premium: optionalCover2ForMember,
+        optionalCover3Premium: optionalCover3ForMember,
+        optionalCover4Premium: optionalCover4ForMember,
+        totalPremium:
+          basePremiumForMember +
+          optionalCover1ForMember +
+          optionalCover2ForMember +
+          optionalCover3ForMember +
+          optionalCover4ForMember,
+      });
     }
 
-    // Determine eldest member's age for base premium
-    const ageList = [];
-    if (numAdults >= 1) ageList.push(adult1Age);
-    if (numAdults >= 2) ageList.push(adult2Age);
-    const ageSlabs = Object.keys(FLOATER_MEDICLAIM_PREMIUMS["Zone I"]["1A"]);
-    const eldestAge = ageList.sort(
-      (a, b) => ageSlabs.indexOf(b) - ageSlabs.indexOf(a)
-    )[0];
-
-    let basePremium = 0;
-    let childPremium = 0;
-    let girlChildDiscount = 0;
-
-    // Adult Premium based on eldest age
-    if (numAdults > 0) {
-      const adultPremiumKey = `${numAdults}A`;
-      basePremium = premiumDataByZone[adultPremiumKey]?.[eldestAge]?.[si] || 0;
-    }
-
-    // Child Premium
-    if (numChildren > 0) {
-      childPremium =
-        FLOATER_MEDICLAIM_PREMIUMS.children[numChildren]?.[si] || 0;
-      const singleChildPremium =
-        FLOATER_MEDICLAIM_PREMIUMS.children["1"]?.[si] || 0;
-      if (isGirlChild1) girlChildDiscount += singleChildPremium * 0.05;
-      if (isGirlChild2 && numChildren > 1)
-        girlChildDiscount += singleChildPremium * 0.05;
-    }
-
-    let totalPremium = basePremium + childPremium;
-
-    // Optional Covers
-    let optionalCover1Premium = 0;
-    if (optionalCover1) {
-      const getOpt1Premium = (age) =>
-        FLOATER_MEDICLAIM_PREMIUMS.optionalCover1[age]?.[si] || 0;
-      if (numAdults >= 1) optionalCover1Premium += getOpt1Premium(adult1Age);
-      if (numAdults >= 2) optionalCover1Premium += getOpt1Premium(adult2Age);
-      if (numChildren >= 1) optionalCover1Premium += getOpt1Premium(child1Age);
-      if (numChildren >= 2) optionalCover1Premium += getOpt1Premium(child2Age);
-    }
-    let optionalCover2Premium =
-      optionalCover2 && si >= 500000
-        ? FLOATER_MEDICLAIM_PREMIUMS.optionalCover2[si] || 0
-        : 0;
-    let optionalCover3Premium =
-      optionalCover3 && si >= 800000
-        ? FLOATER_MEDICLAIM_PREMIUMS.optionalCover3[si] || 0
-        : 0;
-    let optionalCover4Premium =
-      optionalCover4 && si >= 800000
-        ? FLOATER_MEDICLAIM_PREMIUMS.optionalCover4.premium * totalMembers
-        : 0;
-
-    totalPremium +=
-      optionalCover1Premium +
-      optionalCover2Premium +
-      optionalCover3Premium +
-      optionalCover4Premium;
-
-    totalPremium -= girlChildDiscount;
+    let totalPremium = memberWisePremiums.reduce(
+      (acc, member) => acc + member.totalPremium,
+      0
+    );
 
     const loadingPercentage = parseFloat(medicalLoading) || 0;
     const medicalLoadingAmount = totalPremium * (loadingPercentage / 100);
@@ -195,33 +246,45 @@ const FloaterMediclaimInputs = () => {
     totalPremium -= memberDiscount;
 
     const onlineDiscountAmount = onlineDiscount ? totalPremium * 0.1 : 0;
-    const existingCustomerDiscountAmount = existingCustomerDiscount
-      ? totalPremium * 0.05
-      : 0;
-
-    totalPremium -= onlineDiscountAmount + existingCustomerDiscountAmount;
+    totalPremium -= onlineDiscountAmount;
 
     const termDiscountRate =
       policyTerm === "2" ? 0.05 : policyTerm === "3" ? 0.07 : 0;
-    const singleYearPremium = totalPremium;
-    const totalMultiYearPremium = singleYearPremium * parseInt(policyTerm);
+    const totalMultiYearPremium = totalPremium * parseInt(policyTerm);
     const termDiscount = totalMultiYearPremium * termDiscountRate;
-
     totalPremium = totalMultiYearPremium - termDiscount;
 
     const gstAmount = 0;
     const finalPremium = totalPremium + gstAmount;
 
     setResults({
-      /* ... results object remains the same */
+      ...inputs,
+      totalMembers,
+      basePremium: totalBasePremium,
+      memberWisePremiums,
+      memberDiscountRate: memberDiscountRate * 100,
+      memberDiscount,
+      onlineDiscount: onlineDiscountAmount,
+      termDiscount,
+      medicalLoading: medicalLoadingAmount,
+      premiumBeforeGst: totalPremium,
+      gstAmount,
+      finalPremium,
     });
   };
 
-  const handleReset = () => {
-    setInputs(initialInputs);
-    setResults(null);
-    setError("");
-  };
+  if (loading) {
+    return (
+      <div className="card text-center">
+        <h2 className="text-xl font-semibold text-gray-700">
+          Loading Premium Data...
+        </h2>
+        <p className="text-gray-500">
+          Connecting to the database, please wait.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -235,7 +298,6 @@ const FloaterMediclaimInputs = () => {
           </p>
         )}
 
-        {/* Policy Details Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -250,6 +312,12 @@ const FloaterMediclaimInputs = () => {
               <option value="Zone I">Zone I (Maharashtra & Gujarat)</option>
               <option value="Zone II">Zone II (Rest of India)</option>
             </select>
+            {inputs.zone === "Zone II" && (
+              <p className="text-xs text-amber-700 mt-2 p-2 bg-amber-100 rounded-md">
+                <strong>Note:</strong> A 20% co-payment will apply to claims for
+                treatment taken in Zone I cities (Maharashtra & Gujarat).
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -287,7 +355,6 @@ const FloaterMediclaimInputs = () => {
           </div>
         </div>
 
-        {/* Member Details Section */}
         <div className="mt-6 border-t pt-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Member Details
@@ -301,6 +368,7 @@ const FloaterMediclaimInputs = () => {
                 onMemberChange={handleMemberChange}
                 onRemoveMember={removeMember}
                 canRemove={inputs.members.length > 2}
+                sumInsured={inputs.sumInsured}
               />
             ))}
           </div>
@@ -313,141 +381,6 @@ const FloaterMediclaimInputs = () => {
             </button>
           )}
         </div>
-
-        {/* Optional Covers & Discounts */}
-        <div className="mt-6 border-t pt-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
-            Optional Covers, Loadings & Discounts
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-            {/* Checkboxes */}
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <input
-                  id="optionalCover1"
-                  name="optionalCover1"
-                  type="checkbox"
-                  checked={inputs.optionalCover1}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="optionalCover1"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  No Proportionate Deduction
-                </label>
-              </div>
-              <div className="flex items-start">
-                <input
-                  id="optionalCover2"
-                  name="optionalCover2"
-                  type="checkbox"
-                  checked={inputs.optionalCover2}
-                  onChange={handleInputChange}
-                  disabled={parseInt(inputs.sumInsured) < 500000}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="optionalCover2"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  Maternity Expenses Benefit{" "}
-                  <span className="text-xs text-gray-500">(SI ≥ 5 Lakhs)</span>
-                </label>
-              </div>
-              <div className="flex items-start">
-                <input
-                  id="optionalCover3"
-                  name="optionalCover3"
-                  type="checkbox"
-                  checked={inputs.optionalCover3}
-                  onChange={handleInputChange}
-                  disabled={parseInt(inputs.sumInsured) < 800000}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="optionalCover3"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  Revision in Cataract Limit{" "}
-                  <span className="text-xs text-gray-500">(SI ≥ 8 Lakhs)</span>
-                </label>
-              </div>
-              <div className="flex items-start">
-                <input
-                  id="optionalCover4"
-                  name="optionalCover4"
-                  type="checkbox"
-                  checked={inputs.optionalCover4}
-                  onChange={handleInputChange}
-                  disabled={parseInt(inputs.sumInsured) < 800000}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="optionalCover4"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  Non-Medical Items{" "}
-                  <span className="text-xs text-gray-500">(SI ≥ 8 Lakhs)</span>
-                </label>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <input
-                  id="onlineDiscount"
-                  name="onlineDiscount"
-                  type="checkbox"
-                  checked={inputs.onlineDiscount}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="onlineDiscount"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  Online Purchase Discount (10%)
-                </label>
-              </div>
-              <div className="flex items-start">
-                <input
-                  id="existingCustomerDiscount"
-                  name="existingCustomerDiscount"
-                  type="checkbox"
-                  checked={inputs.existingCustomerDiscount}
-                  onChange={handleInputChange}
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded mt-1"
-                />
-                <label
-                  htmlFor="existingCustomerDiscount"
-                  className="ml-3 text-sm text-gray-700"
-                >
-                  Existing NIACL Customer (5%)
-                </label>
-              </div>
-            </div>
-            {/* Medical Loading Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Medical Loading (%)
-              </label>
-              <input
-                name="medicalLoading"
-                value={inputs.medicalLoading}
-                onChange={handleInputChange}
-                type="number"
-                placeholder="e.g., 25"
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Apply for adverse medical history.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
         <div className="mt-8 pt-6 border-t flex justify-end gap-4">
           <button
             onClick={handleReset}

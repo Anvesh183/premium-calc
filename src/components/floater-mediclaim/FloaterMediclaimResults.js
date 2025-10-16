@@ -9,55 +9,75 @@ const FloaterMediclaimResults = ({ results }) => {
       maximumFractionDigits: 2,
     }).format(amount);
 
+  // Guard clause to prevent rendering if the necessary data is not available
+  if (!results || !results.memberWisePremiums) {
+    return null;
+  }
+
   return (
     <div className="card">
       <h2 className="text-2xl font-semibold text-gray-700 mb-4">
         Premium Calculation Results
       </h2>
-      <div className="space-y-3">
-        <div className="flex justify-between">
-          <p>Base Premium (Adults):</p>
-          <p>{formatCurrency(results.basePremium)}</p>
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          Member-wise Premium Breakup
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 text-left">Member</th>
+                <th className="p-2 text-right">Base Premium</th>
+                <th className="p-2 text-right">Opt. Cover I</th>
+                <th className="p-2 text-right">Opt. Cover II</th>
+                <th className="p-2 text-right">Opt. Cover III</th>
+                <th className="p-2 text-right">Opt. Cover IV</th>
+                <th className="p-2 text-right font-bold">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.memberWisePremiums.map((member, index) => (
+                <tr key={index} className="border-b">
+                  <td className="p-2">Member {index + 1}</td>
+                  <td className="p-2 text-right">
+                    {formatCurrency(member.basePremium)}
+                  </td>
+                  <td className="p-2 text-right">
+                    {formatCurrency(member.optionalCover1Premium || 0)}
+                  </td>
+                  <td className="p-2 text-right">
+                    {formatCurrency(member.optionalCover2Premium || 0)}
+                  </td>
+                  <td className="p-2 text-right">
+                    {formatCurrency(member.optionalCover3Premium || 0)}
+                  </td>
+                  <td className="p-2 text-right">
+                    {formatCurrency(member.optionalCover4Premium || 0)}
+                  </td>
+                  <td className="p-2 text-right font-semibold">
+                    {formatCurrency(member.totalPremium)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        {results.childPremium > 0 && (
-          <div className="flex justify-between">
-            <p>Child Premium:</p>
-            <p>{formatCurrency(results.childPremium)}</p>
-          </div>
-        )}
-        {results.optionalCover1Premium > 0 && (
-          <div className="flex justify-between">
-            <p>Optional Cover I:</p>
-            <p>{formatCurrency(results.optionalCover1Premium)}</p>
-          </div>
-        )}
-        {results.optionalCover2Premium > 0 && (
-          <div className="flex justify-between">
-            <p>Optional Cover II (Maternity):</p>
-            <p>{formatCurrency(results.optionalCover2Premium)}</p>
-          </div>
-        )}
-        {results.optionalCover3Premium > 0 && (
-          <div className="flex justify-between">
-            <p>Optional Cover III (Cataract):</p>
-            <p>{formatCurrency(results.optionalCover3Premium)}</p>
-          </div>
-        )}
-        {results.optionalCover4Premium > 0 && (
-          <div className="flex justify-between">
-            <p>Optional Cover IV (Consumables):</p>
-            <p>{formatCurrency(results.optionalCover4Premium)}</p>
-          </div>
-        )}
+      </div>
+      <div className="space-y-3">
+        <div className="flex justify-between font-bold">
+          <p>Total Premium (All Members):</p>
+          <p>
+            {formatCurrency(
+              results.memberWisePremiums.reduce(
+                (acc, member) => acc + member.totalPremium,
+                0
+              )
+            )}
+          </p>
+        </div>
 
         <div className="border-t pt-3 mt-3">
-          {results.girlChildDiscount > 0 && (
-            <div className="flex justify-between text-green-600">
-              <p>Girl Child Discount (5%):</p>
-              <p>- {formatCurrency(results.girlChildDiscount)}</p>
-            </div>
-          )}
-
           {results.medicalLoading > 0 && (
             <div className="flex justify-between text-red-600">
               <p>Medical Loading ({results.medicalLoading}%):</p>
@@ -78,12 +98,6 @@ const FloaterMediclaimResults = ({ results }) => {
             <div className="flex justify-between text-green-600">
               <p>Online Purchase Discount (10%):</p>
               <p>- {formatCurrency(results.onlineDiscount)}</p>
-            </div>
-          )}
-          {results.existingCustomerDiscount > 0 && (
-            <div className="flex justify-between text-green-600">
-              <p>Existing Customer Discount (5%):</p>
-              <p>- {formatCurrency(results.existingCustomerDiscount)}</p>
             </div>
           )}
           {results.termDiscount > 0 && (
