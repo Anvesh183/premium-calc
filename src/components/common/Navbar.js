@@ -4,6 +4,7 @@ import { NavLink, Link } from "react-router-dom";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHealthDropdownOpen, setIsHealthDropdownOpen] = useState(false);
+  const [isMobileHealthOpen, setIsMobileHealthOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const closeAllMenus = () => {
@@ -28,6 +29,11 @@ const Navbar = () => {
       isActive
         ? "text-teal-500 font-semibold"
         : "text-gray-500 hover:text-teal-500"
+    }`;
+
+  const mobileNavLinkClasses = ({ isActive }) =>
+    `block px-3 py-2 rounded-md text-base font-medium ${
+      isActive ? "bg-teal-50 text-teal-700" : "text-gray-600 hover:bg-gray-100"
     }`;
 
   return (
@@ -138,54 +144,81 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <NavLink
               to="/fire-insurance"
               onClick={closeAllMenus}
-              className={navLinkClasses}
+              className={mobileNavLinkClasses}
             >
               Fire Insurance
             </NavLink>
             <NavLink
               to="/gipsa-gmc"
               onClick={closeAllMenus}
-              className={navLinkClasses}
+              className={mobileNavLinkClasses}
             >
               GIPSA GMC
             </NavLink>
             <NavLink
               to="/travel-insurance"
               onClick={closeAllMenus}
-              className={navLinkClasses}
+              className={mobileNavLinkClasses}
             >
               Travel Insurance
             </NavLink>
-            <h3 className="px-3 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Health Insurance
-            </h3>
-            <NavLink
-              to="/floater-mediclaim"
-              onClick={closeAllMenus}
-              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
-            >
-              Floater Mediclaim
-            </NavLink>
-            <NavLink
-              to="/new-india-mediclaim"
-              onClick={closeAllMenus}
-              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
-            >
-              New India Mediclaim
-            </NavLink>
-            <NavLink
-              to="/yuva-bharat"
-              onClick={closeAllMenus}
-              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
-            >
-              Yuva Bharat Policy
-            </NavLink>
+
+            {/* Mobile Health Accordion */}
+            <div>
+              <button
+                onClick={() => setIsMobileHealthOpen(!isMobileHealthOpen)}
+                className="w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-100"
+              >
+                <span>Health Insurance</span>
+                <svg
+                  className={`h-5 w-5 transform transition-transform ${
+                    isMobileHealthOpen ? "rotate-180" : ""
+                  }`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+              {isMobileHealthOpen && (
+                <div className="pl-4 mt-1 space-y-1">
+                  <NavLink
+                    to="/floater-mediclaim"
+                    onClick={closeAllMenus}
+                    className={mobileNavLinkClasses}
+                  >
+                    Floater Mediclaim
+                  </NavLink>
+                  <NavLink
+                    to="/new-india-mediclaim"
+                    onClick={closeAllMenus}
+                    className={mobileNavLinkClasses}
+                  >
+                    New India Mediclaim
+                  </NavLink>
+                  <NavLink
+                    to="/yuva-bharat"
+                    onClick={closeAllMenus}
+                    className={mobileNavLinkClasses}
+                  >
+                    Yuva Bharat Policy
+                  </NavLink>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
