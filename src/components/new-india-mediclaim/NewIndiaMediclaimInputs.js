@@ -4,6 +4,8 @@ import { MEDICLAIM_OPTIONAL_COVERS as optionalCoverData } from "../../data/new-i
 import NewIndiaMediclaimResults from "./NewIndiaMediclaimResults";
 import MemberInput from "./MemberInput";
 
+// --- initialInputs and insuranceFacts constants remain the same ---
+
 const initialInputs = {
   zone: "Zone I",
   members: [
@@ -21,7 +23,6 @@ const initialInputs = {
     },
   ],
   policyTerm: "1",
-  onlineDiscount: false,
 };
 
 const insuranceFacts = [
@@ -168,7 +169,7 @@ const NewIndiaMediclaimInputs = () => {
       return;
     }
 
-    const { zone, members, policyTerm, onlineDiscount } = inputs;
+    const { zone, members, policyTerm } = inputs;
 
     if (members.length > 6) {
       setError("A maximum of 6 members can be covered in a single policy.");
@@ -256,22 +257,13 @@ const NewIndiaMediclaimInputs = () => {
       totalGrossPremium += memberTotalPremium;
     }
 
-    let familyDiscountRate = 0;
-    if (members.length === 2) familyDiscountRate = 0.05;
-    if (members.length > 2) familyDiscountRate = 0.075;
-    const familyDiscount = totalGrossPremium * familyDiscountRate;
-
-    const premiumAfterFamilyDiscount = totalGrossPremium - familyDiscount;
-    const onlineDiscountAmount = onlineDiscount
-      ? premiumAfterFamilyDiscount * 0.1
-      : 0;
-    const premiumForOneYear = premiumAfterFamilyDiscount - onlineDiscountAmount;
+    const premiumForOneYear = totalGrossPremium;
 
     const totalMultiYearPremium = premiumForOneYear * parseInt(policyTerm, 10);
 
     let termDiscountRate = 0;
-    if (policyTerm === "2") termDiscountRate = 0.05;
-    if (policyTerm === "3") termDiscountRate = 0.07;
+    if (policyTerm === "2") termDiscountRate = 0.04;
+    if (policyTerm === "3") termDiscountRate = 0.075;
     const termDiscount = totalMultiYearPremium * termDiscountRate;
 
     const finalPremium = totalMultiYearPremium - termDiscount;
@@ -279,8 +271,8 @@ const NewIndiaMediclaimInputs = () => {
     setResults({
       ...inputs,
       totalGrossPremium,
-      familyDiscount,
-      onlineDiscount: onlineDiscountAmount,
+      familyDiscount: 0,
+      onlineDiscount: 0,
       termDiscount,
       finalPremium,
       memberWisePremiums,
@@ -341,8 +333,8 @@ const NewIndiaMediclaimInputs = () => {
               className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             >
               <option value="1">1 Year</option>
-              <option value="2">2 Years (5% Discount)</option>
-              <option value="3">3 Years (7% Discount)</option>
+              <option value="2">2 Years (4% Discount)</option>
+              <option value="3">3 Years (7.5% Discount)</option>
             </select>
           </div>
         </div>

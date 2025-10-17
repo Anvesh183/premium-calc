@@ -18,12 +18,9 @@ const NewIndiaMediclaimResults = ({ results }) => {
 
   const {
     totalGrossPremium,
-    familyDiscount,
-    onlineDiscount,
     termDiscount,
     finalPremium,
     policyTerm,
-    members,
     memberWisePremiums,
   } = results;
 
@@ -89,18 +86,6 @@ const NewIndiaMediclaimResults = ({ results }) => {
           </div>
 
           <div className="border-t pt-3 mt-3">
-            {familyDiscount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <p>Family Discount ({members.length === 2 ? "5%" : "7.5%"})</p>
-                <p>- {formatCurrency(familyDiscount)}</p>
-              </div>
-            )}
-            {onlineDiscount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <p>Online Purchase Discount (10%):</p>
-                <p>- {formatCurrency(onlineDiscount)}</p>
-              </div>
-            )}
             {termDiscount > 0 && (
               <div className="flex justify-between text-green-600">
                 <p>Long Term Discount ({policyTerm === "2" ? "4%" : "7.5%"})</p>
