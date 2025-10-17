@@ -39,7 +39,7 @@ const PrivateCarInputs = () => {
         rti: longTermPackage === "elite" ? "standard" : "none",
       }));
     }
-  }, [inputs, setInputs]);
+  }, [inputs.policyDuration, inputs.longTermPackage, inputs.cc, setInputs]);
 
   const handleCalculate = () => {
     const calculatedResults =
