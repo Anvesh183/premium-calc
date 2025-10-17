@@ -54,12 +54,6 @@ const Navbar = () => {
               <NavLink to="/fire-insurance" className={navLinkClasses}>
                 Fire Insurance
               </NavLink>
-              <NavLink to="/gipsa-gmc" className={navLinkClasses}>
-                GIPSA GMC
-              </NavLink>
-              <NavLink to="/travel-insurance" className={navLinkClasses}>
-                Travel Insurance
-              </NavLink>
 
               {/* Health Insurance Dropdown */}
               <div className="relative" ref={dropdownRef}>
@@ -67,7 +61,7 @@ const Navbar = () => {
                   onClick={() => setIsHealthDropdownOpen(!isHealthDropdownOpen)}
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-teal-500 focus:outline-none flex items-center"
                 >
-                  Health Insurance
+                  Health
                   <svg
                     className="ml-1 h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -109,6 +103,14 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
+
+              <NavLink to="/motor" className={navLinkClasses}>
+                Motor Insurance
+              </NavLink>
+
+              <NavLink to="/travel-insurance" className={navLinkClasses}>
+                Travel
+              </NavLink>
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -145,7 +147,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
@@ -157,11 +158,11 @@ const Navbar = () => {
               Fire Insurance
             </NavLink>
             <NavLink
-              to="/gipsa-gmc"
+              to="/motor"
               onClick={closeAllMenus}
               className={mobileNavLinkClasses}
             >
-              GIPSA GMC
+              Motor Insurance
             </NavLink>
             <NavLink
               to="/travel-insurance"
@@ -170,55 +171,30 @@ const Navbar = () => {
             >
               Travel Insurance
             </NavLink>
-
-            {/* Mobile Health Accordion */}
-            <div>
-              <button
-                onClick={() => setIsMobileHealthOpen(!isMobileHealthOpen)}
-                className="w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-100"
-              >
-                <span>Health Insurance</span>
-                <svg
-                  className={`h-5 w-5 transform transition-transform ${
-                    isMobileHealthOpen ? "rotate-180" : ""
-                  }`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-              {isMobileHealthOpen && (
-                <div className="pl-4 mt-1 space-y-1">
-                  <NavLink
-                    to="/floater-mediclaim"
-                    onClick={closeAllMenus}
-                    className={mobileNavLinkClasses}
-                  >
-                    Floater Mediclaim
-                  </NavLink>
-                  <NavLink
-                    to="/new-india-mediclaim"
-                    onClick={closeAllMenus}
-                    className={mobileNavLinkClasses}
-                  >
-                    New India Mediclaim
-                  </NavLink>
-                  <NavLink
-                    to="/yuva-bharat"
-                    onClick={closeAllMenus}
-                    className={mobileNavLinkClasses}
-                  >
-                    Yuva Bharat Policy
-                  </NavLink>
-                </div>
-              )}
-            </div>
+            <h3 className="px-3 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Health Insurance
+            </h3>
+            <NavLink
+              to="/floater-mediclaim"
+              onClick={closeAllMenus}
+              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
+            >
+              Floater Mediclaim
+            </NavLink>
+            <NavLink
+              to="/new-india-mediclaim"
+              onClick={closeAllMenus}
+              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
+            >
+              New India Mediclaim
+            </NavLink>
+            <NavLink
+              to="/yuva-bharat"
+              onClick={closeAllMenus}
+              className="block pl-3 pr-4 py-2 border-l-4 text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 border-transparent"
+            >
+              Yuva Bharat Policy
+            </NavLink>
           </div>
         </div>
       )}

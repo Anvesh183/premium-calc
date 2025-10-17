@@ -8,7 +8,7 @@ import {
 import { motion } from "framer-motion";
 import Navbar from "./components/common/Navbar";
 import Spinner from "./components/common/Spinner";
-import Footer from "./components/common/Footer"; // Import the new Footer component
+import Footer from "./components/common/Footer";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const FireInsuranceCalculator = lazy(() =>
@@ -18,6 +18,11 @@ const GipsaGmcCalculator = lazy(() => import("./pages/GipsaGmcCalculator"));
 const TravelInsuranceCalculator = lazy(() =>
   import("./pages/TravelInsuranceCalculator")
 );
+
+// Health Pages
+const HealthInsuranceLandingPage = lazy(() =>
+  import("./pages/HealthInsuranceLandingPage")
+);
 const FloaterMediclaimCalculator = lazy(() =>
   import("./pages/FloaterMediclaimCalculator")
 );
@@ -25,6 +30,17 @@ const NewIndiaMediclaimCalculator = lazy(() =>
   import("./pages/NewIndiaMediclaimCalculator")
 );
 const YuvaBharatCalculator = lazy(() => import("./pages/YuvaBharatCalculator"));
+
+// Motor Pages
+const MotorInsuranceLandingPage = lazy(() =>
+  import("./pages/MotorInsuranceLandingPage")
+);
+const PrivateCarCalculator = lazy(() =>
+  import("./pages/motor-insurance/PrivateCarCalculator")
+);
+const TwoWheelerCalculator = lazy(() =>
+  import("./pages/motor-insurance/TwoWheelerCalculator")
+);
 
 const AppLayout = () => (
   <div className="flex flex-col min-h-screen">
@@ -58,6 +74,9 @@ function App() {
               path="travel-insurance"
               element={<TravelInsuranceCalculator />}
             />
+
+            {/* Health Hub and Calculators */}
+            <Route path="health" element={<HealthInsuranceLandingPage />} />
             <Route
               path="floater-mediclaim"
               element={<FloaterMediclaimCalculator />}
@@ -67,6 +86,17 @@ function App() {
               element={<NewIndiaMediclaimCalculator />}
             />
             <Route path="yuva-bharat" element={<YuvaBharatCalculator />} />
+
+            {/* Motor Hub and Calculators */}
+            <Route path="motor" element={<MotorInsuranceLandingPage />} />
+            <Route
+              path="motor/private-car"
+              element={<PrivateCarCalculator />}
+            />
+            <Route
+              path="motor/two-wheeler"
+              element={<TwoWheelerCalculator />}
+            />
           </Route>
         </Routes>
       </Suspense>
