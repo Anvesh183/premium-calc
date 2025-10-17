@@ -14,7 +14,7 @@ const healthCalculators = [
     to: "/new-india-mediclaim",
     title: "New India Mediclaim",
     icon: <FaUserMd className="h-8 w-8 text-teal-600" />,
-    isUnderConstruction: true,
+    isUnderConstruction: false,
   },
   {
     to: "/yuva-bharat",
