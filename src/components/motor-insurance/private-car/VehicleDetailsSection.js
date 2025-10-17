@@ -3,13 +3,17 @@ import React from "react";
 const VehicleDetailsSection = ({ inputs, handleInputChange, setInputs }) => {
   const handleDateChange = (e) => {
     let value = e.target.value;
-    const prevValue = inputs.purchaseDate || "";
+    const { name } = e.target;
+    const prevValue = inputs[name] || "";
 
     if (value.length < prevValue.length) {
       setInputs((prev) => ({
         ...prev,
-        purchaseDate: value,
-        vehicleAge: calculateVehicleAge(value).ageBracket,
+        [name]: value,
+        vehicleAge: calculateVehicleAge(
+          name === "purchaseDate" ? value : inputs.purchaseDate,
+          name === "renewalDate" ? value : inputs.renewalDate
+        ).ageBracket,
       }));
       return;
     }
@@ -25,7 +29,10 @@ const VehicleDetailsSection = ({ inputs, handleInputChange, setInputs }) => {
 
     const formattedValue = numericValue.slice(0, 10);
 
-    const { years, ageBracket, isValid } = calculateVehicleAge(formattedValue);
+    const { years, ageBracket, isValid } = calculateVehicleAge(
+      name === "purchaseDate" ? formattedValue : inputs.purchaseDate,
+      name === "renewalDate" ? formattedValue : inputs.renewalDate
+    );
 
     if (formattedValue.length === 10 && !isValid) {
       alert("Invalid date. Please enter a date in dd/mm/yyyy format.");
@@ -40,51 +47,64 @@ const VehicleDetailsSection = ({ inputs, handleInputChange, setInputs }) => {
 
     setInputs((prev) => ({
       ...prev,
-      purchaseDate: formattedValue,
+      [name]: formattedValue,
       vehicleAge: ageBracket,
     }));
   };
 
-  const calculateVehicleAge = (dateString) => {
-    if (!dateString || dateString.length !== 10)
-      return { years: null, ageBracket: "0-5", isValid: false };
-    const parts = dateString.split("/");
-    if (parts.length !== 3)
-      return { years: null, ageBracket: "0-5", isValid: false };
-    const [day, month, year] = parts.map(Number);
-    if (
-      isNaN(day) ||
-      isNaN(month) ||
-      isNaN(year) ||
-      year < 1900 ||
-      month < 1 ||
-      month > 12 ||
-      day < 1 ||
-      day > 31
-    ) {
+  const calculateVehicleAge = (dateString, renewalDateString) => {
+    const parseDate = (str) => {
+      if (!str || str.length !== 10) return null;
+      const parts = str.split("/");
+      if (parts.length !== 3) return null;
+      const [day, month, year] = parts.map(Number);
+      if (
+        isNaN(day) ||
+        isNaN(month) ||
+        isNaN(year) ||
+        year < 1900 ||
+        month < 1 ||
+        month > 12 ||
+        day < 1 ||
+        day > 31
+      ) {
+        return null;
+      }
+      const date = new Date(year, month - 1, day);
+      if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+      ) {
+        return null;
+      }
+      return date;
+    };
+
+    const purchaseDate = parseDate(dateString);
+    const renewalDate = parseDate(renewalDateString) || new Date();
+
+    if (!purchaseDate) {
       return { years: null, ageBracket: "0-5", isValid: false };
     }
-    const purchaseDate = new Date(year, month - 1, day);
-    if (
-      purchaseDate.getFullYear() !== year ||
-      purchaseDate.getMonth() !== month - 1 ||
-      purchaseDate.getDate() !== day
-    ) {
-      return { years: null, ageBracket: "0-5", isValid: false };
-    }
-    const today = new Date();
-    let age = today.getFullYear() - purchaseDate.getFullYear();
-    const m = today.getMonth() - purchaseDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < purchaseDate.getDate())) {
+
+    let age = renewalDate.getFullYear() - purchaseDate.getFullYear();
+    const m = renewalDate.getMonth() - purchaseDate.getMonth();
+    if (m < 0 || (m === 0 && renewalDate.getDate() < purchaseDate.getDate())) {
       age--;
     }
+
     let ageBracket = "0-5";
     if (age >= 10) ageBracket = ">10";
     else if (age >= 5) ageBracket = "5-10";
+
     return { years: age, ageBracket, isValid: true };
   };
 
-  const vehicleAgeYears = calculateVehicleAge(inputs.purchaseDate).years;
+  const vehicleAgeYears = calculateVehicleAge(
+    inputs.purchaseDate,
+    inputs.renewalDate
+  ).years;
 
   return (
     <>
@@ -152,6 +172,20 @@ const VehicleDetailsSection = ({ inputs, handleInputChange, setInputs }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
+                Renewal Date
+              </label>
+              <input
+                type="text"
+                name="renewalDate"
+                value={inputs.renewalDate || ""}
+                onChange={handleDateChange}
+                placeholder="dd/mm/yyyy"
+                maxLength="10"
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
                 Insured Declared Value (IDV)
               </label>
               <input
@@ -175,6 +209,24 @@ const VehicleDetailsSection = ({ inputs, handleInputChange, setInputs }) => {
               >
                 <option value="A">Zone A (Major Cities)</option>
                 <option value="B">Zone B (Rest of India)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                No Claim Bonus (NCB)
+              </label>
+              <select
+                name="ncb"
+                value={inputs.ncb}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
+              >
+                <option value="0">0%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="35">35%</option>
+                <option value="45">45%</option>
+                <option value="50">50%</option>
               </select>
             </div>
           </>

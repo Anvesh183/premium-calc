@@ -1,5 +1,12 @@
 import { useState } from "react";
 
+const formatDate = (date) => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const initialInputs = {
   policyDuration: "1",
   longTermPackage: "basic",
@@ -8,6 +15,7 @@ const initialInputs = {
   payd: false,
   paydOption: "none",
   purchaseDate: "",
+  renewalDate: formatDate(new Date()),
   vehicleAge: "0-5",
   cc: "upto1000",
   kw: "upto30",

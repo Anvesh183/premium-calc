@@ -1,38 +1,44 @@
 import { MOTOR_RATES } from "../data/motor-data";
 
-const calculateVehicleAge = (dateString) => {
-  if (!dateString || dateString.length !== 10)
-    return { years: 0, ageBracket: "0-5", isValid: false };
-  const parts = dateString.split("/");
-  if (parts.length !== 3)
-    return { years: 0, ageBracket: "0-5", isValid: false };
-  const [day, month, year] = parts.map(Number);
-  if (
-    isNaN(day) ||
-    isNaN(month) ||
-    isNaN(year) ||
-    year.toString().length < 4 ||
-    year < 1900 ||
-    month < 1 ||
-    month > 12 ||
-    day < 1 ||
-    day > 31
-  ) {
+const calculateVehicleAge = (dateString, renewalDateString) => {
+  const parseDate = (str) => {
+    if (!str || str.length !== 10) return null;
+    const parts = str.split("/");
+    if (parts.length !== 3) return null;
+    const [day, month, year] = parts.map(Number);
+    if (
+      isNaN(day) ||
+      isNaN(month) ||
+      isNaN(year) ||
+      year < 1900 ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31
+    ) {
+      return null;
+    }
+    const date = new Date(year, month - 1, day);
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) {
+      return null;
+    }
+    return date;
+  };
+
+  const purchaseDate = parseDate(dateString);
+  const renewalDate = parseDate(renewalDateString) || new Date();
+
+  if (!purchaseDate) {
     return { years: 0, ageBracket: "0-5", isValid: false };
   }
-  const purchaseDate = new Date(year, month - 1, day);
-  if (
-    isNaN(purchaseDate.getTime()) ||
-    purchaseDate.getFullYear() !== year ||
-    purchaseDate.getMonth() !== month - 1 ||
-    purchaseDate.getDate() !== day
-  ) {
-    return { years: 0, ageBracket: "0-5", isValid: false };
-  }
-  const today = new Date();
-  let age = today.getFullYear() - purchaseDate.getFullYear();
-  const m = today.getMonth() - purchaseDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < purchaseDate.getDate())) {
+
+  let age = renewalDate.getFullYear() - purchaseDate.getFullYear();
+  const m = renewalDate.getMonth() - purchaseDate.getMonth();
+  if (m < 0 || (m === 0 && renewalDate.getDate() < purchaseDate.getDate())) {
     age--;
   }
   let ageBracket = "0-5";
@@ -110,7 +116,10 @@ export const calculateOneYearPremium = (inputs) => {
     additionalTowingPremium = 0;
 
   if (inputs.policyType !== "liability") {
-    const { years: vehicleAgeYears } = calculateVehicleAge(inputs.purchaseDate);
+    const { years: vehicleAgeYears } = calculateVehicleAge(
+      inputs.purchaseDate,
+      inputs.renewalDate
+    );
     const odRateKey =
       inputs.fuelType === "petrol_diesel"
         ? inputs.cc
