@@ -2,12 +2,24 @@ import { MOTOR_RATES } from "../data/motor-data";
 
 const calculateVehicleAge = (dateString) => {
   if (!dateString || dateString.length !== 10)
-    return { years: 0, ageBracket: "0-5" };
+    return { years: 0, ageBracket: "0-5", isValid: false };
   const parts = dateString.split("/");
-  if (parts.length !== 3) return { years: 0, ageBracket: "0-5" };
+  if (parts.length !== 3)
+    return { years: 0, ageBracket: "0-5", isValid: false };
   const [day, month, year] = parts.map(Number);
-  if (isNaN(day) || isNaN(month) || isNaN(year) || year.toString().length < 4)
-    return { years: 0, ageBracket: "0-5" };
+  if (
+    isNaN(day) ||
+    isNaN(month) ||
+    isNaN(year) ||
+    year.toString().length < 4 ||
+    year < 1900 ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > 31
+  ) {
+    return { years: 0, ageBracket: "0-5", isValid: false };
+  }
   const purchaseDate = new Date(year, month - 1, day);
   if (
     isNaN(purchaseDate.getTime()) ||
@@ -98,8 +110,7 @@ export const calculateOneYearPremium = (inputs) => {
     additionalTowingPremium = 0;
 
   if (inputs.policyType !== "liability") {
-    const { years: vehicleAgeYears, ageBracket: vehicleAgeBracket } =
-      calculateVehicleAge(inputs.purchaseDate);
+    const { years: vehicleAgeYears } = calculateVehicleAge(inputs.purchaseDate);
     const odRateKey =
       inputs.fuelType === "petrol_diesel"
         ? inputs.cc
@@ -107,7 +118,7 @@ export const calculateOneYearPremium = (inputs) => {
             inputs.kw
           ];
     const odRate =
-      privateCar.odRates[odRateKey][vehicleAgeBracket][inputs.zone];
+      privateCar.odRates[odRateKey][inputs.vehicleAge][inputs.zone];
     basicOD = (idv * odRate) / 100;
 
     if (inputs.policyType === "package" && inputs.payd) {
@@ -144,11 +155,13 @@ export const calculateOneYearPremium = (inputs) => {
         "3-4",
         "4-5",
       ]);
-      const rate =
-        inputs.hybridProtect === "basic"
-          ? privateCar.longTermAddons.hybridProtectBasic
-          : privateCar.longTermAddons.hybridProtectComp;
-      hybridProtectPremium = (idv * rate) / 100;
+      if (ageBracket) {
+        const rate =
+          inputs.hybridProtect === "basic"
+            ? privateCar.longTermAddons.hybridProtectBasic
+            : privateCar.longTermAddons.hybridProtectComp;
+        hybridProtectPremium = (idv * rate) / 100;
+      }
     }
 
     if (inputs.nilDep !== "none") {
@@ -161,14 +174,16 @@ export const calculateOneYearPremium = (inputs) => {
         "5-6",
         "6-7",
       ]);
-      let premium =
-        (idv *
-          privateCar.nilDepreciation[inputs.nilDep][ageForNilDep][
-            inputs.nilDepClaims
-          ]) /
-        100;
-      nilDepPremium =
-        premium - premium * (parseFloat(inputs.nilDepDiscount) / 100);
+      if (ageForNilDep) {
+        let premium =
+          (idv *
+            privateCar.nilDepreciation[inputs.nilDep][ageForNilDep][
+              inputs.nilDepClaims
+            ]) /
+          100;
+        nilDepPremium =
+          premium - premium * (parseFloat(inputs.nilDepDiscount) / 100);
+      }
     }
     if (inputs.rti !== "none") {
       const invoicePrice = parseFloat(inputs.invoicePrice) || 0;
@@ -177,10 +192,12 @@ export const calculateOneYearPremium = (inputs) => {
         return null;
       }
       const ageForRTI = getAgeBracket(vehicleAgeYears, ["0-1", "1-2", "2-3"]);
-      let premium =
-        (invoicePrice * privateCar.returnToInvoice[inputs.rti][ageForRTI]) /
-        100;
-      rtiPremium = premium - premium * (parseFloat(inputs.rtiDiscount) / 100);
+      if (ageForRTI) {
+        let premium =
+          (invoicePrice * privateCar.returnToInvoice[inputs.rti][ageForRTI]) /
+          100;
+        rtiPremium = premium - premium * (parseFloat(inputs.rtiDiscount) / 100);
+      }
     }
     ncbProtectPremium = inputs.ncbProtect
       ? (basicOD * privateCar.ncbProtection[inputs.ncb]) / 100
@@ -193,13 +210,15 @@ export const calculateOneYearPremium = (inputs) => {
         "3-4",
         "4-5",
       ]);
-      const rate =
-        inputs.nilDep !== "none"
-          ? privateCar.engineProtect.withZeroDep[ageForEngineProtect]
-          : privateCar.engineProtect.withoutZeroDep["0-5"];
-      let premium = (idv * rate) / 100;
-      engineProtectPremium =
-        premium - premium * (parseFloat(inputs.engineProtectDiscount) / 100);
+      if (ageForEngineProtect) {
+        const rate =
+          inputs.nilDep !== "none"
+            ? privateCar.engineProtect.withZeroDep[ageForEngineProtect]
+            : privateCar.engineProtect.withoutZeroDep["0-5"];
+        let premium = (idv * rate) / 100;
+        engineProtectPremium =
+          premium - premium * (parseFloat(inputs.engineProtectDiscount) / 100);
+      }
     }
     if (inputs.batteryProtect) {
       const ageForBattery = getAgeBracket(vehicleAgeYears, [

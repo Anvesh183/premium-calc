@@ -6,7 +6,6 @@ import {
   FaMotorcycle,
   FaTruck,
   FaBus,
-  FaBolt,
   FaTractor,
 } from "react-icons/fa";
 
