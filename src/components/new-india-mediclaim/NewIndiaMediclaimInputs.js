@@ -4,8 +4,6 @@ import { MEDICLAIM_OPTIONAL_COVERS as optionalCoverData } from "../../data/new-i
 import NewIndiaMediclaimResults from "./NewIndiaMediclaimResults";
 import MemberInput from "./MemberInput";
 
-// --- initialInputs and insuranceFacts constants remain the same ---
-
 const initialInputs = {
   zone: "Zone I",
   members: [
@@ -272,8 +270,8 @@ const NewIndiaMediclaimInputs = () => {
     const totalMultiYearPremium = premiumForOneYear * parseInt(policyTerm, 10);
 
     let termDiscountRate = 0;
-    if (policyTerm === "2") termDiscountRate = 0.04;
-    if (policyTerm === "3") termDiscountRate = 0.075;
+    if (policyTerm === "2") termDiscountRate = 0.05;
+    if (policyTerm === "3") termDiscountRate = 0.07;
     const termDiscount = totalMultiYearPremium * termDiscountRate;
 
     const finalPremium = totalMultiYearPremium - termDiscount;
@@ -343,8 +341,8 @@ const NewIndiaMediclaimInputs = () => {
               className="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm"
             >
               <option value="1">1 Year</option>
-              <option value="2">2 Years (4% Discount)</option>
-              <option value="3">3 Years (7.5% Discount)</option>
+              <option value="2">2 Years (5% Discount)</option>
+              <option value="3">3 Years (7% Discount)</option>
             </select>
           </div>
         </div>
